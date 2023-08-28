@@ -217,7 +217,7 @@ public class Musica
         }
         else
         {
-            content[i] = "01/01/"+ content[i];
+            content[i] = content[i]+"-01-01";
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             music.setReleaseDate(format.parse(content[i])); i++;
         }
@@ -235,27 +235,33 @@ public class Musica
             music.setExplicit(true); i++;
         }
 
-        if(content[i].charAt(0) == '"')
+        if(content[i] != "")
         {
-            String [] tmp = new String [32];
-            int contador = 0;
-
-            while(content[i].charAt(content[i].length() - 1) != '"')
+            if(content[i].charAt(0) == '"')
             {
-                tmp[contador] = content[i]; i++; contador++;
+                String [] tmp = new String [32];
+                int contador = 0;
+
+                while(content[i].charAt(content[i].length() - 1) != '"')
+                {
+                    tmp[contador] = content[i]; i++; contador++;
+                }
+
+                tmp[contador] = content[i]; i++;
+
+                music.setGenres(tmp);
+
             }
-
-            tmp[contador] = content[i]; i++;
-
-            music.setGenres(tmp);
-
+            else
+            {
+                String [] tmp = {content[i], null}; i++;
+                music.setGenres(tmp);
+            }
         }
         else
         {
-            String [] tmp = {content[i], null}; i++;
-            music.setGenres(tmp);
+            i++;
         }
-
 
         music.setTempo(Float.parseFloat(content[i])); i++;
 
@@ -327,24 +333,27 @@ public class Musica
         System.out.println("Explicito: " + this.explicit);
 
         System.out.print("Genres: ");
-        for(int i = 0; i < this.getGenres().length; i++)
+        if(this.getGenres() != null)
         {
-            if(this.getGenres()[i] == null)
+            for(int i = 0; i < this.getGenres().length; i++)
             {
-                break;
-            }
+                if(this.getGenres()[i] == null)
+                {
+                    break;
+                }
 
-            System.out.print(this.getGenres()[i]);
+                System.out.print(this.getGenres()[i]);
 
-            if(this.getGenres()[i+1] != null)
-            {
-                System.out.print(", ");
-            }
-            else
-            {
-                System.out.println();
-            }
+                if(this.getGenres()[i+1] != null)
+                {
+                    System.out.print(", ");
+                }
+                else
+                {
+                    System.out.println();
+                }
 
+            }
         }
 
         System.out.println("Tempo: " + this.getTempo());
@@ -383,25 +392,25 @@ public class Musica
     {
 
         BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("SpotifyMusic.csv"),"UTF-8"));
-
         String tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
-               tmp    = scF.readLine();
 
-        String smp [] = tmp.split(",");
+        for(int i = 0; i < 100; i++)
+        {
 
+                   tmp    = scF.readLine();
 
-        Musica music = preencherObjeto(smp);
+                   System.out.println();
+                   System.out.println(tmp);
+                   System.out.println();
 
-        music.imprimir();
+            //String smp [] = tmp.split(",");
 
+            //Musica music = preencherObjeto(smp);
+
+            //music.imprimir();
+
+        }
+        
     }
 
     
