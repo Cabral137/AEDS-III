@@ -172,27 +172,30 @@ public class Musica
 
     // Funcoes
 
-    public static boolean exceptions (String nome)
+    public static String fixString (String linha)
     {
-        if(nome.equals("\"Writing's On The Wall - From \"\"Spectre\"\" Soundtrack\""))
-        {
-            return(true);
-        }
-        else
-        {
 
+        String tmp = "";
+
+        for(int i = 0; i < linha.length(); i++)
+        {
+            if(linha.charAt(i) != '"')
+            {
+                tmp = tmp + linha.charAt(i);
+            }
         }
 
-        return(false);
+
+        return(tmp);
+
     }
-
 
     public static Musica preencherObjeto (String [] content) throws ParseException
     {
         Musica music = new Musica();
         int i = 0;
 
-        if(content[i].charAt(0) == '"' && !exceptions(content[i]))
+        if(content[i].charAt(0) == '"')
         {
             String [] tmp = new String [8];
             int contador = 0;
@@ -232,18 +235,18 @@ public class Musica
 
             while(content[i].charAt(content[i].length() - 1) != '"')
             {
-                tmp[contador] = content[i]; i++;
+                tmp[contador] = fixString(content[i]); i++;
                 contador++;
             }
 
-            tmp[contador] = content[i]; i++;
+            tmp[contador] = fixString(content[i]); i++;
 
             music.setArtists(tmp);
 
         }
         else
         {
-            String [] tmp = {content[i], null};
+            String [] tmp = {fixString(content[i]), null};
             music.setArtists(tmp); i++;
         }
 
@@ -254,11 +257,11 @@ public class Musica
 
             while(content[i].charAt(content[i].length() - 1) != '"')
             {
-                tmp[contador] = content[i]; i++;
+                tmp[contador] = fixString(content[i]); i++;
                 contador++;
             }
 
-            tmp[contador] = content[i]; i++;
+            tmp[contador] = fixString(content[i]); i++;
 
             String aux = "";
 
@@ -323,17 +326,17 @@ public class Musica
 
                 while(content[i].charAt(content[i].length() - 1) != '"')
                 {
-                    tmp[contador] = content[i]; i++; contador++;
+                    tmp[contador] = fixString(content[i]); i++; contador++;
                 }
 
-                tmp[contador] = content[i]; i++;
+                tmp[contador] = fixString(content[i]); i++;
 
                 music.setGenres(tmp);
 
             }
             else
             {
-                String [] tmp = {content[i], null}; i++;
+                String [] tmp = {fixString(content[i]), null}; i++;
                 music.setGenres(tmp);
             }
         }
@@ -362,10 +365,10 @@ public class Musica
 
             while(content[i].charAt(content[i].length() - 1) != '"')
             {
-                tmp[contador] = content[i]; i++; contador++;
+                tmp[contador] = fixString(content[i]); i++; contador++;
             }
 
-            tmp[contador] = content[i]; i++;
+            tmp[contador] = fixString(content[i]); i++;
 
             music.setLabel(tmp);
 
@@ -490,10 +493,6 @@ public class Musica
 
             if(tmp.charAt(0) != ',')
             {
-
-                System.out.println();
-                System.out.println(tmp);
-                System.out.println();
 
                 //System.out.println(smp[0]);
 
