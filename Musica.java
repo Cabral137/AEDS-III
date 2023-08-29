@@ -172,25 +172,71 @@ public class Musica
 
     // Funcoes
 
+    public static boolean exceptions (String nome)
+    {
+        if(nome.equals("\"Writing's On The Wall - From \"\"Spectre\"\" Soundtrack\""))
+        {
+            return(true);
+        }
+        else
+        {
+
+        }
+
+        return(false);
+    }
+
 
     public static Musica preencherObjeto (String [] content) throws ParseException
     {
         Musica music = new Musica();
+        int i = 0;
 
-        music.setName(content[0]);
-
-        int i = 1;
-
-        if(content[i].charAt(0) == '"')
+        if(content[i].charAt(0) == '"' && !exceptions(content[i]))
         {
-            String [] tmp = new String [5];
+            String [] tmp = new String [8];
+            int contador = 0;
 
             while(content[i].charAt(content[i].length() - 1) != '"')
             {
-                tmp[i-1] = content[i]; i++;
+                tmp[contador] = content[i]; i++;
+                contador++;
             }
 
-            tmp[i-1] = content[i]; i++;
+            tmp[contador] = content[i]; i++;
+
+            String aux = "";
+
+            for(int o = 0; o < tmp.length; o++)
+            {
+                if(tmp[o] == null)
+                {
+                    break;
+                }
+
+                aux = aux + tmp[o];
+            }
+
+            music.setName(aux);
+
+        }
+        else
+        {
+            music.setName(content[i]); i++;
+        }
+
+        if(content[i].charAt(0) == '"')
+        {
+            String [] tmp = new String [10];
+            int contador = 0;
+
+            while(content[i].charAt(content[i].length() - 1) != '"')
+            {
+                tmp[contador] = content[i]; i++;
+                contador++;
+            }
+
+            tmp[contador] = content[i]; i++;
 
             music.setArtists(tmp);
 
@@ -203,7 +249,30 @@ public class Musica
 
         if(content[i].charAt(0) == '"')
         {
-            music.setAlbumName(content[i] + "," + content[i+1]); i++; i++;
+            String [] tmp = new String [12];
+            int contador = 0;
+
+            while(content[i].charAt(content[i].length() - 1) != '"')
+            {
+                tmp[contador] = content[i]; i++;
+                contador++;
+            }
+
+            tmp[contador] = content[i]; i++;
+
+            String aux = "";
+
+            for(int o = 0; o < tmp.length; o++)
+            {
+                if(tmp[o] == null)
+                {
+                    break;
+                }
+
+                aux = aux + tmp[o];
+            }
+
+            music.setAlbumName(aux);
         }
         else
         {
@@ -212,8 +281,18 @@ public class Musica
 
         if(content[i].length() > 4)
         {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            music.setReleaseDate(format.parse(content[i])); i++;
+            if(content[i].length() > 7)
+            {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                music.setReleaseDate(format.parse(content[i])); i++;
+            }
+            else
+            {
+                content[i] = content[i]+"-01";
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                music.setReleaseDate(format.parse(content[i])); i++;
+            }
+
         }
         else
         {
@@ -239,7 +318,7 @@ public class Musica
         {
             if(content[i].charAt(0) == '"')
             {
-                String [] tmp = new String [32];
+                String [] tmp = new String [40];
                 int contador = 0;
 
                 while(content[i].charAt(content[i].length() - 1) != '"')
@@ -263,9 +342,19 @@ public class Musica
             i++;
         }
 
-        music.setTempo(Float.parseFloat(content[i])); i++;
 
+        float num = Float.parseFloat(content[i]); i++;
 
+        if(num > 300)
+        {
+            music.setTempo(num/1000);
+        }
+        else
+        {
+            music.setTempo(num);
+        }
+
+        
         if(content[i].charAt(0) == '"')
         {
             String [] tmp = new String [4];
@@ -328,7 +417,7 @@ public class Musica
 
         System.out.println("Foto do album: " + this.getAlbumImage());
 
-        System.out.println("Duracao: " + (this.getDuration()) + " ms");
+        System.out.println("Duracao: " + (this.getDuration()/60000) + " m " + (this.getDuration()/1000)%60 + " s");
 
         System.out.println("Explicito: " + this.explicit);
 
@@ -394,20 +483,28 @@ public class Musica
         BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("SpotifyMusic.csv"),"UTF-8"));
         String tmp    = scF.readLine();
 
-        for(int i = 0; i < 100; i++)
+        while(scF.ready())
         {
 
-                   tmp    = scF.readLine();
+            tmp    = scF.readLine();
 
-                   System.out.println();
-                   System.out.println(tmp);
-                   System.out.println();
+            if(tmp.charAt(0) != ',')
+            {
 
-            //String smp [] = tmp.split(",");
+                System.out.println();
+                System.out.println(tmp);
+                System.out.println();
 
-            //Musica music = preencherObjeto(smp);
+                //System.out.println(smp[0]);
 
-            //music.imprimir();
+                String smp [] = tmp.split(","); 
+                    
+                Musica music = preencherObjeto(smp);
+
+                music.imprimir(); System.out.println();
+
+            }
+                
 
         }
         
