@@ -205,7 +205,7 @@ public class Musica
 
     }
 
-    public static Musica preencherObjeto (String [] content) throws ParseException
+    public Musica preencherObjeto (String [] content) throws ParseException
     {
         Musica music = new Musica();
         int i = 0;
@@ -405,7 +405,9 @@ public class Musica
 
     public void imprimir ()
     {
-        System.out.println("Nome: "    + this.getName());
+        System.out.println("ID: " + this.getID());
+
+        System.out.println("Nome: " + this.getName());
         
         System.out.print("Artistas: ");
         for(int i = 0; i < this.getArtists().length; i++)
@@ -517,7 +519,7 @@ public class Musica
         
 
     }
-
+/*
     public static void main(String[] args) throws IOException, ParseException
     {
 
@@ -546,7 +548,7 @@ public class Musica
         }
         
     }
-
+*/
     
 
 }
