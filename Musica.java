@@ -1,4 +1,7 @@
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +15,7 @@ public class Musica
 
     // Variaveis
 
+    private int     id;
     private String  name;
     private String  [] artists;
     private String  albumName;
@@ -32,8 +36,9 @@ public class Musica
         
     }
     
-    public Musica(String name, String [] artists, String albumName, Date releaseDate, String albumImage, int duration, boolean explicit, String [] genres, float tempo, String [] label, byte key, byte timeSignature) 
+    public Musica(int id, String name, String [] artists, String albumName, Date releaseDate, String albumImage, int duration, boolean explicit, String [] genres, float tempo, String [] label, byte key, byte timeSignature) 
     {
+        this.id            = id;
         this.key           = key;
         this.name          = name;
         this.tempo         = tempo;
@@ -49,6 +54,16 @@ public class Musica
     }
 
     // Getters and Setters
+
+    public int getID ()
+    {
+        return (this.id);
+    }
+
+    public void setID (int insert)
+    {
+        this.id = insert;
+    }
 
     public String getName () 
     {
@@ -110,7 +125,7 @@ public class Musica
         this.duration = insert;
     }
 
-    public boolean isExplicit () 
+    public boolean getExplicit () 
     {
         return (this.explicit);
     }
@@ -479,6 +494,29 @@ public class Musica
     }
 
 
+    public void fromByteArray(byte ba[]) throws IOException
+    {
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(ba);
+        DataInputStream dis = new DataInputStream(bais);
+
+        this.setName(dis.readUTF());
+
+        String [] tmp = new String [10]; 
+        for(int i = 0; i < tmp.length; i++)
+        {
+            tmp[i] = dis.readUTF();
+        }
+
+        this.setAlbumName(dis.readUTF());
+
+        //this.setReleaseDate(dis.readInt());
+
+        this.setAlbumImage(dis.readUTF());
+
+        
+
+    }
 
     public static void main(String[] args) throws IOException, ParseException
     {
