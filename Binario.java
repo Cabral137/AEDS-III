@@ -7,23 +7,40 @@ import java.io.IOException;
 class Binario
 {
 
+    public static String juntarLista (String [] lista)
+    {
+        String tmp = "";
+
+        for(int i = 0; i < lista.length; i++)
+        {
+            tmp = tmp + lista[i] + ";;";
+        }
+
+        return (tmp);
+
+    }
+
+    public static String [] separarLista (String lista)
+    {
+        return(lista.split(";;"));
+    }
+
     public byte[] toByteArray() throws IOException
     {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
+        dos.writeInt(this.getID());
         
         dos.writeUTF(this.getName());
 
-        for(int i = 0; i < this.getArtists().length; i++)
-        {
-            dos.writeUTF(this.getArtists()[i]);
-        }
+        dos.writeUTF(juntarLista(this.getArtists()));
         
         dos.writeUTF(this.getAlbumName());
 
-        //dos.writeInt(this.getReleaseDate().toString);
+        SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
+        dos.writeInt(Integer.parseInt(format.format(this.getReleaseDate())));
 
         dos.writeUTF(this.getAlbumImage());
 
@@ -31,17 +48,11 @@ class Binario
 
         dos.writeBoolean(this.getExplicit());
 
-        for(int i = 0; i < this.getGenres().length; i++)
-        {
-            dos.writeUTF(this.getGenres()[i]);
-        }
+        dos.writeUTF(juntarLista(this.getGenres()));
 
         dos.writeFloat(this.getTempo());
 
-        for(int i = 0; i < this.getLabel().length; i++)
-        {
-            dos.writeUTF(this.getLabel()[i]);
-        }
+        dos.writeUTF(juntarLista(this.getLabel()));
 
         dos.writeByte(this.getKey());
 
@@ -57,7 +68,7 @@ class Binario
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
 
-        
+        this.setID()
 
     }
 
