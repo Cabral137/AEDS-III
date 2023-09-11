@@ -33,6 +33,7 @@ class Main
                 break;
 
                 case 2:
+                bin.PesquisarMusicaID();
                 break;
 
                 case 3:
