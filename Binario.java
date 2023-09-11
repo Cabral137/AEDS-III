@@ -17,7 +17,7 @@ class Binario
     {
         if(lista == null)
         {
-            return("q");
+            return("---");
         }
         else
         {
@@ -25,7 +25,11 @@ class Binario
 
             for(int i = 0; i < lista.length; i++)
             {
-                tmp = tmp + lista[i] + ";;";
+                if(lista[i] != null)
+                {
+                    tmp = tmp + lista[i] + ";;";
+                }
+                
             }
 
             return (tmp);
@@ -39,7 +43,7 @@ class Binario
         return(lista.split(";;"));
     }
 
-    public byte[] toByteArray(Musica music) throws IOException
+    public byte[] toByteArray(Musica music) throws Exception
     {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -76,7 +80,7 @@ class Binario
 
     }
 
-    public Musica fromByteArray(byte ba[]) throws IOException
+    public Musica fromByteArray(byte ba[]) throws Exception
     {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
@@ -117,29 +121,88 @@ class Binario
     public void CarregarCSV () throws Exception
     {
 
-        BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\789765\\Documents\\Faculdade-main\\SpotifyMusic.csv"),"UTF-8"));
+        BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("SpotifyMusic.csv"),"UTF-8"));
         RandomAccessFile rf = new RandomAccessFile("SpotifyMusic.hex", "rw");
         int contador = 0;
 
         while(scF.ready())
         {
 
-            String smp [] = scF.readLine().split(",");  
-                    
-            Musica music = new Musica();
-            music = music.preencherObjeto(smp);
-            music.setID(contador); contador++;
+            String linha = scF.readLine();
 
-            byte [] tmp = toByteArray(music);
+            if(linha.charAt(0) != ',')
+            {
+                String smp [] = linha.split(",");  
+                        
+                Musica music = new Musica();
+                music = music.preencherObjeto(smp);
+                music.setID(contador); contador++;
 
-            long tamanho = tmp.length;
+                byte [] tmp = toByteArray(music);
 
-            rf.writeLong(tamanho);
-            rf.writeBoolean(false);
-            rf.write(tmp);
+                long tamanho = tmp.length;
+
+                rf.writeLong(tamanho);
+                rf.writeBoolean(false);
+                rf.write(tmp);
+            }
 
         }
 
+    }
+
+    public Musica LerMusicaID (int ID) throws Exception
+    {
+
+        Musica music = new Musica();
+        RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
+
+        long filePointer = ra.getFilePointer();
+        ra.seek(filePointer);
+
+        while(true)
+        {
+
+            int tamanho = ra.readInt();
+
+            if(!ra.readBoolean())
+            {
+                int IDtmp = ra.readInt();
+
+                if(ID == IDtmp)
+                {
+                    ra.seek(filePointer = filePointer + 5);
+                    byte [] musicArray = new byte [tamanho];
+                    ra.read(musicArray);
+                    music = fromByteArray(musicArray);
+                    break;
+                }
+
+            }
+            else
+            {
+                filePointer =  filePointer + tamanho + 5;
+                ra.seek(filePointer);
+            }
+
+
+        }
+
+        return(music);
+
+    }
+
+    public void PesquisarMusicaID () throws Exception
+    {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("ID da música: ");
+        int ID = Integer.parseInt(sc.nextLine());
+
+        Musica music = LerMusicaID(ID);
+
+        music.imprimir();
 
 
     }
