@@ -3,7 +3,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
@@ -51,6 +50,7 @@ class Binario
 
         dos.writeInt(music.getID());
         
+        dos.writeInt(music.getName().length());
         dos.writeUTF(music.getName());
 
         dos.writeUTF(juntarLista(music.getArtists()));
@@ -140,10 +140,8 @@ class Binario
 
                 byte [] tmp = toByteArray(music);
 
-                long tamanho = tmp.length;
-
-                rf.writeLong(tamanho);
                 rf.writeBoolean(false);
+                rf.writeInt(tmp.length);
                 rf.write(tmp);
             }
 
@@ -151,42 +149,50 @@ class Binario
 
     }
 
-    public Musica LerMusicaID (int ID) throws Exception
+    public Musica LerMusicaID (int ID)
     {
 
         Musica music = new Musica();
-        RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
 
-        long filePointer = ra.getFilePointer();
-        ra.seek(filePointer);
-
-        while(true)
+        try 
         {
+            RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
 
-            int tamanho = ra.readInt();
+            long filePointer = ra.getFilePointer();
 
-            if(!ra.readBoolean())
+            while(filePointer < ra.length())
             {
-                int IDtmp = ra.readInt();
 
-                if(ID == IDtmp)
+                if(!ra.readBoolean())
                 {
-                    ra.seek(filePointer = filePointer + 5);
-                    byte [] musicArray = new byte [tamanho];
-                    ra.read(musicArray);
-                    music = fromByteArray(musicArray);
-                    break;
+                    int tamanho = ra.readInt();
+                    int IDtmp = ra.readInt();
+
+                    if(ID == IDtmp)
+                    {
+                        ra.seek(filePointer = filePointer + 2);
+                        byte [] musicArray = new byte [tamanho-14];
+                        ra.read(musicArray);
+                        music = fromByteArray(musicArray);
+                        return(music);
+                    }
+
+                }
+                else
+                {
+                    int tamanho = ra.readInt();
+                    filePointer = filePointer + tamanho;
+                    ra.seek(filePointer);
                 }
 
-            }
-            else
-            {
-                filePointer =  filePointer + tamanho + 5;
-                ra.seek(filePointer);
-            }
+            }   
 
-
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
         }
+
 
         return(music);
 
