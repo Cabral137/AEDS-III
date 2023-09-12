@@ -332,8 +332,9 @@ public class Musica
             music.setExplicit(true); i++;
         }
 
-        if(content[i] != "")
+        if(!content[i].equals(""))
         {
+
             if(content[i].charAt(0) == '"')
             {
                 String [] tmp = new String [40];
