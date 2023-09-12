@@ -213,4 +213,67 @@ class Binario
 
     }
 
+    public void inserirMusica (Musica music)
+    {
+        
+    }
+
+    public void AddMusica () throws Exception   
+    {
+
+        Scanner sc = new Scanner(System.in);
+        Musica music = new Musica();
+        String tmp = "";
+        
+        System.out.print("\nNome: ");
+        music.setName(sc.nextLine());
+
+        System.out.print("\nArtistas:");
+        music.setArtists(sc.nextLine().split(","));
+
+        System.out.print("\nAlbum: ");
+        music.setAlbumName(sc.nextLine());
+
+        System.out.print("\nData de Lançamento: ");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        music.setReleaseDate(format.parse(sc.nextLine()));
+
+        System.out.print("\nLink Imagem do Album: ");
+        music.setAlbumImage(sc.nextLine());
+
+        System.out.print("\nDuração: ");
+        music.setDuration(Integer.parseInt(sc.nextLine()));
+
+        System.out.print("\nExplícito: ");
+        System.out.println("- SIM\n- NÃO");
+        tmp = sc.nextLine();
+
+        if(tmp.equals("SIM"))
+        {
+            music.setExplicit(true);
+        }
+        else
+        {
+            music.setExplicit(false);
+        }
+
+        System.out.print("\nGeneros:");
+        music.setGenres(sc.nextLine().split(","));
+
+        System.out.print("\nTempo: ");
+        music.setTempo(Float.parseFloat(sc.nextLine()));
+
+        System.out.print("\nLabel:");
+        music.setLabel(sc.nextLine().split(","));
+
+        System.out.print("\nKey: ");
+        music.setKey(Byte.parseByte(sc.nextLine()));
+
+        System.out.print("\nTime Signature: ");
+        music.setTimeSignature(Byte.parseByte(sc.nextLine()));
+
+        inserirMusica(music);
+
+    }
+
 }
