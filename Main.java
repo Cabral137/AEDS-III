@@ -36,6 +36,7 @@ class Main
                 break;
 
                 case 3:
+                bin.AddMusica();
                 break;
 
                 case 4:
