@@ -12,7 +12,7 @@ class Main
 
         System.out.println("\n\tTrabalho Prático - AEDS III - Spotify Top 10000 - Victor Cabral\n");
 
-        while(acao != 6)
+        while(acao != 7)
         {
 
             System.out.println("\nOpções:\n" +
@@ -21,7 +21,8 @@ class Main
                                "3 - Adicionar musica\n" +
                                "4 - Excluir musica\n" +
                                "5 - Atualizar musica\n" +
-                               "6 - Sair\n");
+                               "6 - Testes\n" +
+                               "7 - Sair\n");
 
             acao = Integer.parseInt(sc.nextLine());
 
@@ -43,6 +44,10 @@ class Main
                 break;
 
                 case 5:
+                break;
+
+                case 6:
+                bin.teste();
                 break;
 
             }
