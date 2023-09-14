@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.io.InputStreamReader;
@@ -26,14 +27,47 @@ class Binario
             {
                 if(lista[i] != null)
                 {
-                    tmp = tmp + lista[i] + ";;";
+
+                    if((i + 1) < lista.length)
+                    {
+                        tmp = tmp + lista[i] + ";;";
+                    }
+                    else
+                    {
+                        tmp = tmp + lista[i];
+                    }
+                   
                 }
+
                 
             }
 
             return (tmp);
         }
 
+
+    }
+
+    public static int tamanho (String [] array)
+    {
+
+        int tamanho = 0;
+
+        if(array != null)
+        {
+
+            for (int i = 0; i < array.length; i++)
+            {
+                if(array[i] != null)
+                {
+                    tamanho = tamanho + array[i].length();
+                }
+                
+            }
+
+        }
+
+        return (tamanho);
 
     }
 
@@ -48,9 +82,8 @@ class Binario
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        dos.writeInt(music.getID());
-        
-        dos.writeInt(music.getName().length());
+        dos.writeShort(music.getID());
+
         dos.writeUTF(music.getName());
 
         dos.writeUTF(juntarLista(music.getArtists()));
@@ -86,29 +119,36 @@ class Binario
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
         Musica music = new Musica();
+        int tamanho = 0;
 
-        music.setID(dis.readInt());
+        music.setID(dis.readShort());
 
-        music.setName(dis.readUTF());
+        tamanho = dis.readByte();
+        music.setName(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8));
 
-        music.setArtists(separarLista(dis.readUTF()));
+        tamanho = dis.readByte();
+        music.setArtists(separarLista(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8)));
 
-        music.setAlbumName(dis.readUTF());
+        tamanho = dis.readByte();
+        music.setAlbumName(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8));
 
         SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
         music.setReleaseDate(format.parse(Integer.toString(dis.readInt())));
 
-        music.setAlbumImage(dis.readUTF());
+        tamanho = dis.readByte();
+        music.setAlbumImage(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8));
 
         music.setDuration(dis.readInt());
 
         music.setExplicit(dis.readBoolean());
 
-        music.setGenres(separarLista(dis.readUTF()));
+        tamanho = dis.readByte();
+        music.setGenres(separarLista(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8)));
 
         music.setTempo(dis.readFloat());
 
-        music.setLabel(separarLista(dis.readUTF()));
+        tamanho = dis.readByte();
+        music.setLabel(separarLista(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8)));
 
         music.setKey(dis.readByte());
 
@@ -141,7 +181,7 @@ class Binario
                 byte [] tmp = toByteArray(music);
 
                 rf.writeBoolean(false);
-                rf.writeInt(tmp.length);
+                rf.writeShort(tmp.length);
                 rf.write(tmp);
             }
 
@@ -160,18 +200,34 @@ class Binario
 
             long filePointer = ra.getFilePointer();
 
+            if(!ra.readBoolean())
+            {
+                System.out.println(true);
+            
+                Short tamanho = ra.readShort();
+                System.out.println(tamanho);
+
+                Short nds = ra.readShort();
+                System.out.println(nds);
+
+                System.out.println(ra.readUTF());
+
+
+
+            }
+
+/*
             while(filePointer < ra.length())
             {
 
                 if(!ra.readBoolean())
                 {
-                    int tamanho = ra.readInt();
-                    int IDtmp = ra.readInt();
+                    int tamanho = ra.readShort();
+                    int IDtmp = ra.readShort();
 
                     if(ID == IDtmp)
                     {
-                        ra.seek(filePointer = filePointer + 2);
-                        byte [] musicArray = new byte [tamanho-14];
+                        byte [] musicArray = new byte [tamanho - 4];
                         ra.read(musicArray);
                         music = fromByteArray(musicArray);
                         return(music);
@@ -180,13 +236,13 @@ class Binario
                 }
                 else
                 {
-                    int tamanho = ra.readInt();
+                    int tamanho = ra.readShort();
                     filePointer = filePointer + tamanho;
                     ra.seek(filePointer);
                 }
 
             }   
-
+*/
         } 
         catch (Exception e) 
         {
@@ -208,7 +264,7 @@ class Binario
 
         Musica music = LerMusicaID(ID);
 
-        music.imprimir();
+        //music.imprimir();
 
 
     }
@@ -273,6 +329,32 @@ class Binario
         music.setTimeSignature(Byte.parseByte(sc.nextLine()));
 
         inserirMusica(music);
+
+    }
+
+    public void teste ()
+    {
+
+        try 
+        {
+
+            RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
+            long filePointer = ra.getFilePointer();
+
+            boolean array = ra.readBoolean();
+
+            for(int i = 0; i < 1; i++)
+            {
+                System.out.println(array);
+            }
+
+
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+        
 
     }
 
