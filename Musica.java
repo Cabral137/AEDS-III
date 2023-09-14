@@ -411,25 +411,33 @@ public class Musica
         System.out.println("Nome: " + this.getName());
         
         System.out.print("Artistas: ");
-        for(int i = 0; i < this.getArtists().length; i++)
+        if(this.getArtists() != null)
         {
-            if(this.getArtists()[i] == null)
+            for(int i = 0; i < this.getArtists().length; i++)
             {
-                break;
-            }
+                if(this.getArtists()[i] == null)
+                {
+                    break;
+                }
 
-            System.out.print(this.getArtists()[i]);
+                System.out.print(this.getArtists()[i]);
 
-            if(this.getArtists()[i+1] != null)
-            {
-                System.out.print(", ");
-            }
-            else
-            {
-                System.out.println();
-            }
+                if(this.getArtists()[i+1] != null)
+                {
+                    System.out.print(", ");
+                }
+                else
+                {
+                    System.out.println();
+                }
 
+            }
         }
+        else
+        {
+            System.out.println("---");
+        }
+        
 
         System.out.println("Album: " + this.getAlbumName());
 
@@ -520,36 +528,5 @@ public class Musica
         
 
     }
-/*
-    public static void main(String[] args) throws IOException, ParseException
-    {
-
-        BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("SpotifyMusic.csv"),"UTF-8"));
-        String tmp    = scF.readLine();
-
-        while(scF.ready())
-        {
-
-            tmp    = scF.readLine();
-
-            if(tmp.charAt(0) != ',')
-            {
-
-                //System.out.println(smp[0]);
-
-                String smp [] = tmp.split(","); 
-                    
-                Musica music = preencherObjeto(smp);
-
-                music.imprimir(); System.out.println();
-
-            }
-                
-
-        }
-        
-    }
-*/
-    
 
 }
