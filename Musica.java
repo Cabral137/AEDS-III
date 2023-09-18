@@ -406,7 +406,8 @@ public class Musica
 
     public void imprimir ()
     {
-        System.out.println("ID: " + this.getID());
+
+        System.out.println("\nID: " + this.getID());
 
         System.out.println("Nome: " + this.getName());
         
@@ -415,14 +416,10 @@ public class Musica
         {
             for(int i = 0; i < this.getArtists().length; i++)
             {
-                if(this.getArtists()[i] == null)
-                {
-                    break;
-                }
 
                 System.out.print(this.getArtists()[i]);
 
-                if(this.getArtists()[i+1] != null)
+                if(this.getArtists().length > i + 1)
                 {
                     System.out.print(", ");
                 }
@@ -455,14 +452,10 @@ public class Musica
         {
             for(int i = 0; i < this.getGenres().length; i++)
             {
-                if(this.getGenres()[i] == null)
-                {
-                    break;
-                }
 
                 System.out.print(this.getGenres()[i]);
 
-                if(this.getGenres()[i+1] != null)
+                if(this.getGenres().length > i + 1)
                 {
                     System.out.print(", ");
                 }
@@ -479,14 +472,10 @@ public class Musica
         System.out.print("Label: ");
         for(int i = 0; i < this.getLabel().length; i++)
         {
-            if(this.getLabel()[i] == null)
-            {
-                break;
-            }
 
             System.out.print(this.getLabel()[i]);
 
-            if(this.getLabel()[i+1] != null)
+            if(this.getLabel().length > i + 1)
             {
                 System.out.print(", ");
             }
