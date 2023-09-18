@@ -30,7 +30,7 @@ class Binario
 
                     if((i + 1) < lista.length)
                     {
-                        tmp = tmp + lista[i] + ";;";
+                        tmp = tmp + lista[i] + ";";
                     }
                     else
                     {
@@ -73,7 +73,7 @@ class Binario
 
     public static String [] separarLista (String lista)
     {
-        return(lista.split(";;"));
+        return(lista.split(";"));
     }
 
     public byte[] toByteArray(Musica music) throws Exception
@@ -119,36 +119,37 @@ class Binario
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
         Musica music = new Musica();
-        int tamanho = 0;
 
-        music.setID(dis.readShort());
+        music.setName(dis.readUTF());
 
-        tamanho = dis.readByte();
-        music.setName(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8));
+        music.setArtists(separarLista(dis.readUTF()));
 
-        tamanho = dis.readByte();
-        music.setArtists(separarLista(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8)));
+        music.setAlbumName(dis.readUTF());
 
-        tamanho = dis.readByte();
-        music.setAlbumName(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8));
+        SimpleDateFormat format1 = new SimpleDateFormat("ddMMyyyy");
+        SimpleDateFormat format2 = new SimpleDateFormat("dMMyyyy");
+        int tmp = dis.readInt();
 
-        SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
-        music.setReleaseDate(format.parse(Integer.toString(dis.readInt())));
+        if(tmp > 9999999)
+        {
+            music.setReleaseDate(format1.parse(Integer.toString(tmp)));
+        }
+        else
+        {
+            music.setReleaseDate(format2.parse(Integer.toString(tmp)));
+        }
 
-        tamanho = dis.readByte();
-        music.setAlbumImage(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8));
+        music.setAlbumImage(dis.readUTF());
 
         music.setDuration(dis.readInt());
 
         music.setExplicit(dis.readBoolean());
 
-        tamanho = dis.readByte();
-        music.setGenres(separarLista(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8)));
+        music.setGenres(separarLista(dis.readUTF()));
 
         music.setTempo(dis.readFloat());
 
-        tamanho = dis.readByte();
-        music.setLabel(separarLista(new String(dis.readNBytes(tamanho), StandardCharsets.UTF_8)));
+        music.setLabel(separarLista(dis.readUTF()));
 
         music.setKey(dis.readByte());
 
@@ -200,23 +201,6 @@ class Binario
 
             long filePointer = ra.getFilePointer();
 
-            if(!ra.readBoolean())
-            {
-                System.out.println(true);
-            
-                Short tamanho = ra.readShort();
-                System.out.println(tamanho);
-
-                Short nds = ra.readShort();
-                System.out.println(nds);
-
-                System.out.println(ra.readUTF());
-
-
-
-            }
-
-/*
             while(filePointer < ra.length())
             {
 
@@ -227,22 +211,27 @@ class Binario
 
                     if(ID == IDtmp)
                     {
-                        byte [] musicArray = new byte [tamanho - 4];
+                        byte [] musicArray = new byte [tamanho - 2];
                         ra.read(musicArray);
                         music = fromByteArray(musicArray);
                         return(music);
+                    }
+                    else
+                    {
+                        filePointer = filePointer + (tamanho + 3);
+                        ra.seek(filePointer); 
                     }
 
                 }
                 else
                 {
                     int tamanho = ra.readShort();
-                    filePointer = filePointer + tamanho;
+                    filePointer = filePointer + (tamanho + 5);
                     ra.seek(filePointer);
                 }
 
             }   
-*/
+
         } 
         catch (Exception e) 
         {
@@ -263,8 +252,9 @@ class Binario
         int ID = Integer.parseInt(sc.nextLine());
 
         Musica music = LerMusicaID(ID);
+        music.setID(ID);
 
-        //music.imprimir();
+        music.imprimir();
 
 
     }
