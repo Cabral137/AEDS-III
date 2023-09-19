@@ -232,6 +232,8 @@ class Binario
 
             }   
 
+            ra.close();
+
         } 
         catch (Exception e) 
         {
@@ -318,6 +320,7 @@ class Binario
         System.out.print("\nTime Signature: ");
         music.setTimeSignature(Byte.parseByte(sc.nextLine()));
 
+        sc.close();
         inserirMusica(music);
 
     }
@@ -338,6 +341,7 @@ class Binario
                 System.out.println(array);
             }
 
+            ra.close();
 
         } 
         catch (Exception e) 
