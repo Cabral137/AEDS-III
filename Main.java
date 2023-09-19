@@ -6,8 +6,9 @@ class Main
     public static void main(String[] args) throws Exception
     {
 
-        Scanner sc  = new Scanner(System.in);
-        Binario bin = new Binario(); 
+        Scanner  sc  = new Scanner(System.in);
+        Binario  bin = new Binario(); 
+        Intercal inc = new Intercal();
         int acao = 0;
 
         System.out.println("\n\tTrabalho Prático - AEDS III - Spotify Top 10000 - Victor Cabral\n");
@@ -41,18 +42,22 @@ class Main
                 break;
 
                 case 4:
+                
                 break;
 
                 case 5:
+                
                 break;
 
                 case 6:
-                bin.teste();
+                inc.balanceada(100, 5);
                 break;
 
             }
 
         }
+
+        sc.close();
 
     }
 
