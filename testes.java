@@ -11,36 +11,31 @@ public class Main
             int contador = 0;
             int pos = 0;
             
-            int [] ponteiros = new int [matriz.get(0).length];
-            
-            for(int i = 0; i < ponteiros.length; i++)
-            {
-                ponteiros[i] = 0;
-            }
+            int [] ponteiros = new int [matriz.size()];
     
             for(int j = 0; j < matriz.get(0).length; j++)
             {
                 for(int i = 0; i < matriz.size(); i++)
                 {
-                    tmp[i] = matriz.get(i)[ponteiros[j]];
+                    tmp[i] = matriz.get(j)[ponteiros[i]];
                     
-                    System.out.println(matriz.get(i)[ponteiros[j]]);
+                    //System.out.println(ponteiros[i]);
                 }
     
-                for(int o = 0; o < tmp.length; o++)
+                for(int o = 1; o < tmp.length-1; o++)
                 {
                     //System.out.println(tmp[o] + "---");
                     
-                    //if(tmp[o] < tmp[o-1])
-                    //{
-                    //    resp[contador] = tmp[o];
-                    //    pos = o;
-                    //}
+                    if(tmp[o] < tmp[o-1])
+                    {
+                        resp[contador] = tmp[o];
+                        pos = o;
+                    }
     
                 }
     
                 contador++;
-                ponteiros[pos]++;
+                ponteiros[pos] = ponteiros[pos] + 1;
     
             }
     
@@ -63,7 +58,7 @@ public class Main
             
             for(int i = 0; i < print.length; i++)
             {
-                //System.out.println(print[i]);
+                System.out.println(print[i]);
             }
         }
 }
