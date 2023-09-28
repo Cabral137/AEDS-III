@@ -1,420 +1,519 @@
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.RandomAccessFile;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Scanner;
-import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-class Binario
+public class Musica 
 {
 
-    public static String juntarLista (String [] lista)
+    // Variaveis
+
+    private int     id;
+    private String  name;
+    private String  [] artists;
+    private String  albumName;
+    private Date    releaseDate;
+    private String  albumImage;
+    private int     duration;
+    private boolean explicit;
+    private String  [] genres;
+    private float   tempo;
+    private String  [] label;
+    private byte    key;
+    private byte    timeSignature;
+    
+    // Construtores
+    
+    public Musica() 
     {
-        if(lista == null)
+        
+    }
+    
+    public Musica(int id, String name, String [] artists, String albumName, Date releaseDate, String albumImage, int duration, boolean explicit, String [] genres, float tempo, String [] label, byte key, byte timeSignature) 
+    {
+        this.id            = id;
+        this.key           = key;
+        this.name          = name;
+        this.tempo         = tempo;
+        this.label         = label;
+        this.genres        = genres;
+        this.artists       = artists;
+        this.duration      = duration;
+        this.explicit      = explicit;
+        this.albumName     = albumName;
+        this.albumImage    = albumImage;
+        this.releaseDate   = releaseDate;
+        this.timeSignature = timeSignature;
+    }
+
+    // Getters and Setters
+
+    public int getID ()
+    {
+        return (this.id);
+    }
+
+    public void setID (int insert)
+    {
+        this.id = insert;
+    }
+
+    public String getName () 
+    {
+        return (this.name);
+    }
+
+    public void setName (String insert) 
+    {
+        this.name = insert;
+    }
+
+    public String [] getArtists () 
+    {
+        return (this.artists);
+    }
+
+    public void setArtists (String [] insert) 
+    {
+        this.artists = insert;
+    }
+
+    public String getAlbumName () 
+    {
+        return (this.albumName);
+    }
+
+    public void setAlbumName (String insert) 
+    {
+        this.albumName = insert;
+    }
+
+    public Date getReleaseDate () 
+    {
+        return (this.releaseDate);
+    }
+
+    public void setReleaseDate (Date insert) 
+    {
+        this.releaseDate = insert;
+    }
+
+    public String getAlbumImage () 
+    {
+        return (this.albumImage);
+    }
+
+    public void setAlbumImage (String insert) 
+    {
+        this.albumImage = insert;
+    }
+
+    public int getDuration ()
+    {
+        return (this.duration);
+    }
+
+    public void setDuration (int insert) 
+    {
+        this.duration = insert;
+    }
+
+    public boolean getExplicit () 
+    {
+        return (this.explicit);
+    }
+
+    public void setExplicit (boolean insert) 
+    {
+        this.explicit = insert;
+    }
+
+    public String [] getGenres () 
+    {
+        return (this.genres);
+    }
+
+    public void setGenres (String [] insert) 
+    {
+        this.genres = insert;
+    }
+
+    public float getTempo () 
+    {
+        return (this.tempo);
+    }
+
+    public void setTempo (float insert) 
+    {
+        this.tempo = insert;
+    }
+
+    public String [] getLabel () 
+    {
+        return (this.label);
+    }
+
+    public void setLabel (String [] insert) 
+    {
+        this.label = insert;
+    }
+
+    public byte getKey () 
+    {
+        return (this.key);
+    }
+
+    public void setKey (byte insert) 
+    {
+        this.key = insert;
+    }
+
+    public byte getTimeSignature () 
+    {
+        return (this.timeSignature);
+    }
+
+    public void setTimeSignature(byte insert) 
+    {
+        this.timeSignature = insert;
+    }
+
+    // Funcoes
+
+    public static String fixString (String linha)
+    {
+
+        String tmp = "";
+
+        for(int i = 0; i < linha.length(); i++)
         {
-            return("---");
+            if(linha.charAt(i) != '"')
+            {
+                tmp = tmp + linha.charAt(i);
+            }
+        }
+
+
+        return(tmp);
+
+    }
+
+    public Musica preencherObjeto (String [] content) throws ParseException
+    {
+        Musica music = new Musica();
+        int i = 0;
+
+        if(content[i].charAt(0) == '"')
+        {
+            String [] tmp = new String [8];
+            int contador = 0;
+
+            while(content[i].charAt(content[i].length() - 1) != '"')
+            {
+                tmp[contador] = content[i]; i++;
+                contador++;
+            }
+
+            tmp[contador] = content[i]; i++;
+
+            String aux = "";
+
+            for(int o = 0; o < tmp.length; o++)
+            {
+                if(tmp[o] == null)
+                {
+                    break;
+                }
+
+                aux = aux + tmp[o];
+            }
+
+            music.setName(aux);
+
         }
         else
         {
-            String tmp = "";
-
-            for(int i = 0; i < lista.length; i++)
-            {
-                if(lista[i] != null)
-                {
-
-                    if((i + 1) < lista.length)
-                    {
-                        tmp = tmp + lista[i] + ";";
-                    }
-                    else
-                    {
-                        tmp = tmp + lista[i];
-                    }
-                   
-                }
-
-                
-            }
-
-            return (tmp);
+            music.setName(content[i]); i++;
         }
 
+        if(content[i].charAt(0) == '"')
+        {
+            String [] tmp = new String [10];
+            int contador = 0;
 
-    }
+            while(content[i].charAt(content[i].length() - 1) != '"')
+            {
+                tmp[contador] = fixString(content[i]); i++;
+                contador++;
+            }
 
-    public static int tamanho (String [] array)
-    {
+            tmp[contador] = fixString(content[i]); i++;
 
-        int tamanho = 0;
+            music.setArtists(tmp);
 
-        if(array != null)
+        }
+        else
+        {
+            String [] tmp = {fixString(content[i]), null};
+            music.setArtists(tmp); i++;
+        }
+
+        if(content[i].charAt(0) == '"')
+        {
+            String [] tmp = new String [12];
+            int contador = 0;
+
+            while(content[i].charAt(content[i].length() - 1) != '"')
+            {
+                tmp[contador] = fixString(content[i]); i++;
+                contador++;
+            }
+
+            tmp[contador] = fixString(content[i]); i++;
+
+            String aux = "";
+
+            for(int o = 0; o < tmp.length; o++)
+            {
+                if(tmp[o] == null)
+                {
+                    break;
+                }
+
+                aux = aux + tmp[o];
+            }
+
+            music.setAlbumName(aux);
+        }
+        else
+        {
+            music.setAlbumName(content[i]); i++;
+        }
+
+        if(content[i].length() > 4)
+        {
+            if(content[i].length() > 7)
+            {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                music.setReleaseDate(format.parse(content[i])); i++;
+            }
+            else
+            {
+                content[i] = content[i]+"-01";
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                music.setReleaseDate(format.parse(content[i])); i++;
+            }
+
+        }
+        else
+        {
+            content[i] = content[i]+"-01-01";
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            music.setReleaseDate(format.parse(content[i])); i++;
+        }
+
+        music.setAlbumImage(content[i]); i++;
+
+        music.setDuration(Integer.parseInt(content[i])); i++;
+
+        if(content[i].equals("FALSE"))
+        {
+            music.setExplicit(false); i++;
+        }
+        else
+        {
+            music.setExplicit(true); i++;
+        }
+
+        if(!content[i].equals(""))
         {
 
-            for (int i = 0; i < array.length; i++)
+            if(content[i].charAt(0) == '"')
             {
-                if(array[i] != null)
+                String [] tmp = new String [40];
+                int contador = 0;
+
+                while(content[i].charAt(content[i].length() - 1) != '"')
                 {
-                    tamanho = tamanho + array[i].length();
+                    tmp[contador] = fixString(content[i]); i++; contador++;
                 }
-                
+
+                tmp[contador] = fixString(content[i]); i++;
+
+                music.setGenres(tmp);
+
+            }
+            else
+            {
+                String [] tmp = {fixString(content[i]), null}; i++;
+                music.setGenres(tmp);
+            }
+        }
+        else
+        {
+            i++;
+        }
+
+
+        float num = Float.parseFloat(content[i]); i++;
+
+        if(num > 300)
+        {
+            music.setTempo(num/1000);
+        }
+        else
+        {
+            music.setTempo(num);
+        }
+
+        
+        if(content[i].charAt(0) == '"')
+        {
+            String [] tmp = new String [4];
+            int contador = 0;
+
+            while(content[i].charAt(content[i].length() - 1) != '"')
+            {
+                tmp[contador] = fixString(content[i]); i++; contador++;
+            }
+
+            tmp[contador] = fixString(content[i]); i++;
+
+            music.setLabel(tmp);
+
+        }
+        else
+        {
+            String [] tmp = {content[i], null}; i++;
+            music.setLabel(tmp);
+        }
+
+
+        music.setKey(Byte.parseByte(content[i])); i++;
+
+        music.setTimeSignature(Byte.parseByte(content[i])); i++;
+
+        return(music);
+
+    }
+
+    public void imprimir ()
+    {
+
+        System.out.println("\nID: " + this.getID());
+
+        System.out.println("Nome: " + this.getName());
+        
+        System.out.print("Artistas: ");
+        if(this.getArtists() != null)
+        {
+            for(int i = 0; i < this.getArtists().length; i++)
+            {
+
+                System.out.print(this.getArtists()[i]);
+
+                if(this.getArtists().length > i + 1)
+                {
+                    System.out.print(", ");
+                }
+                else
+                {
+                    System.out.println();
+                }
+
+            }
+        }
+        else
+        {
+            System.out.println("---");
+        }
+        
+
+        System.out.println("Album: " + this.getAlbumName());
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println("Data: " + format.format(this.getReleaseDate()));
+
+        System.out.println("Foto do album: " + this.getAlbumImage());
+
+        System.out.println("Duracao: " + (this.getDuration()/60000) + " m " + (this.getDuration()/1000)%60 + " s");
+
+        System.out.println("Explicito: " + this.explicit);
+
+        System.out.print("Genres: ");
+        if(this.getGenres() != null)
+        {
+            for(int i = 0; i < this.getGenres().length; i++)
+            {
+
+                System.out.print(this.getGenres()[i]);
+
+                if(this.getGenres().length > i + 1)
+                {
+                    System.out.print(", ");
+                }
+                else
+                {
+                    System.out.println();
+                }
+
+            }
+        }
+
+        System.out.println("Tempo: " + this.getTempo());
+
+        System.out.print("Label: ");
+        for(int i = 0; i < this.getLabel().length; i++)
+        {
+
+            System.out.print(this.getLabel()[i]);
+
+            if(this.getLabel().length > i + 1)
+            {
+                System.out.print(", ");
+            }
+            else
+            {
+                System.out.println();
             }
 
         }
 
-        return (tamanho);
+        System.out.println("Key: " + this.getKey());
+
+        System.out.println("Time Signature: " + this.getTimeSignature());
+
 
     }
 
-    public static String [] separarLista (String lista)
-    {
-        return(lista.split(";"));
-    }
 
-    public byte[] toByteArray(Musica music) throws Exception
-    {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(baos);
-
-        dos.writeShort(music.getID());
-
-        dos.writeUTF(music.getName());
-
-        dos.writeUTF(juntarLista(music.getArtists()));
-        
-        dos.writeUTF(music.getAlbumName());
-
-        SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
-        dos.writeInt(Integer.parseInt(format.format(music.getReleaseDate())));
-
-        dos.writeUTF(music.getAlbumImage());
-
-        dos.writeInt(music.getDuration());
-
-        dos.writeBoolean(music.getExplicit());
-
-        dos.writeUTF(juntarLista(music.getGenres()));
-
-        dos.writeFloat(music.getTempo());
-
-        dos.writeUTF(juntarLista(music.getLabel()));
-
-        dos.writeByte(music.getKey());
-
-        dos.writeByte(music.getTimeSignature());
-
-        return (baos.toByteArray());
-
-    }
-
-    public Musica fromByteArray(byte ba[]) throws Exception
+    public void fromByteArray(byte ba[]) throws IOException
     {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        Musica music = new Musica();
 
-        music.setName(dis.readUTF());
+        this.setName(dis.readUTF());
 
-        music.setArtists(separarLista(dis.readUTF()));
-
-        music.setAlbumName(dis.readUTF());
-
-        SimpleDateFormat format1 = new SimpleDateFormat("ddMMyyyy");
-        SimpleDateFormat format2 = new SimpleDateFormat("dMMyyyy");
-        int tmp = dis.readInt();
-
-        if(tmp > 9999999)
+        String [] tmp = new String [10]; 
+        for(int i = 0; i < tmp.length; i++)
         {
-            music.setReleaseDate(format1.parse(Integer.toString(tmp)));
-        }
-        else
-        {
-            music.setReleaseDate(format2.parse(Integer.toString(tmp)));
+            tmp[i] = dis.readUTF();
         }
 
-        music.setAlbumImage(dis.readUTF());
+        this.setAlbumName(dis.readUTF());
 
-        music.setDuration(dis.readInt());
+        //this.setReleaseDate(dis.readInt());
 
-        music.setExplicit(dis.readBoolean());
+        this.setAlbumImage(dis.readUTF());
 
-        music.setGenres(separarLista(dis.readUTF()));
-
-        music.setTempo(dis.readFloat());
-
-        music.setLabel(separarLista(dis.readUTF()));
-
-        music.setKey(dis.readByte());
-
-        music.setTimeSignature(dis.readByte());
-
-        return(music);
-
-    }
-
-    public void CarregarCSV () throws Exception
-    {
-
-        try
-        {
-            File excluir = new File ("SpotifyMusic.hex");
-            excluir.delete();
-        }
-        catch(Exception e)
-        {
-
-        }
-
-        BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("SpotifyMusic.csv"),"UTF-8"));
-        RandomAccessFile rf = new RandomAccessFile("SpotifyMusic.hex", "rw");
-        int contador = 0;
-        rf.writeInt(0);
-
-        while(scF.ready())
-        {
-
-            String linha = scF.readLine();
-
-            if(linha.charAt(0) != ',')
-            {
-                String smp [] = linha.split(",");  
-                        
-                Musica music = new Musica();
-                music = music.preencherObjeto(smp);
-                music.setID(contador);
-
-                byte [] tmp = toByteArray(music);
-                rf.writeBoolean(false);
-                rf.writeShort(tmp.length);
-                rf.write(tmp);
-
-                long ponteiro = rf.getFilePointer();          // Atualiza o primeiro byte do arquivo com o ultimo ID inserido
-                rf.seek(0);
-                rf.writeInt(contador);
-                rf.seek(ponteiro);
-
-                contador++;
-            }
-
-        }
-
-        System.out.println("\n\n\tARQUIVOS CARREGADOS\n\n");
-
-    }
-
-    public Musica LerMusicaID (int ID)
-    {
-
-        Musica music = new Musica();
-
-        try 
-        {
-            RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
-            ra.readInt();
-
-            long filePointer = ra.getFilePointer();
-
-            while(filePointer < ra.length())
-            {
-
-                if(!ra.readBoolean())
-                {
-                    int tamanho = ra.readShort();
-                    int IDtmp = ra.readShort();
-
-                    if(ID == IDtmp)
-                    {
-                        byte [] musicArray = new byte [tamanho - 2];
-                        ra.read(musicArray);
-                        music = fromByteArray(musicArray);
-                        return(music);
-                    }
-                    else
-                    {
-                        filePointer = filePointer + (tamanho + 3);
-                        ra.seek(filePointer); 
-                    }
-
-                }
-                else
-                {
-                    int tamanho = ra.readShort();
-                    filePointer = filePointer + (tamanho + 5);
-                    ra.seek(filePointer);
-                }
-
-            }   
-
-            ra.close();
-
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-        }
-
-
-        return(music);
-
-    }
-
-    public void PesquisarMusicaID () throws Exception
-    {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("ID da música: ");
-        int ID = Integer.parseInt(sc.nextLine());
-
-
-        RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "rw");
-
-        if(ra.readInt() < ID)
-        {
-            System.out.println("\n\n\tNÃO EXISTE UMA MÚSICA COM ESSE ID\n\n");
-        }
-        else
-        {
-            Musica music = LerMusicaID(ID);
-
-            if(music == null)
-            {
-                System.out.println("\n\n\tNÃO EXISTE UMA MÚSICA COM ESSE ID\n\n");
-            }
-            else
-            {
-                music.setID(ID);
-                music.imprimir();
-            }
-
-        }
-
-
-    }
-
-    public void inserirMusica (Musica music)
-    {
-
-        try
-        {
-            RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "rw");
-            int id = ra.readInt();
-            ra.writeInt(id + 1);
-            music.setID(id);
-            ra.seek(ra.length());
-
-            byte [] tmp = toByteArray(music);
-
-            ra.writeBoolean(false);
-            ra.writeShort(tmp.length);
-            ra.write(tmp);
-        }
-        catch(Exception e)
-        {
-            System.out.println("\n\nERRO: Não foi possível inserir a música");
-        }
-        
-
-    }
-
-    public void AddMusica () throws Exception   
-    {
-
-        Scanner sc = new Scanner(System.in);
-        Musica music = new Musica();
-        String tmp = "";
-
-        try
-        {
-            System.out.print("\nNome: ");
-            music.setName(sc.nextLine());
-
-            System.out.print("\nArtistas: ");
-            music.setArtists(sc.nextLine().split(","));
-
-            System.out.print("\nAlbum: ");
-            music.setAlbumName(sc.nextLine());
-
-            System.out.print("\nData de Lançamento: ");
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            music.setReleaseDate(format.parse(sc.nextLine()));
-
-            System.out.print("\nLink Imagem do Album: ");
-            music.setAlbumImage(sc.nextLine());
-
-            System.out.print("\nDuração: ");
-            music.setDuration(Integer.parseInt(sc.nextLine()));
-
-            System.out.print("\nExplícito: ");
-            System.out.println("\n- SIM\n- NÃO\n");
-            tmp = sc.nextLine();
-
-            if(tmp.equals("SIM"))
-            {
-                music.setExplicit(true);
-            }
-            else
-            {
-                music.setExplicit(false);
-            }
-
-            System.out.print("\nGeneros: ");
-            music.setGenres(sc.nextLine().split(","));
-
-            System.out.print("\nTempo: ");
-            music.setTempo(Float.parseFloat(sc.nextLine()));
-
-            System.out.print("\nLabel: ");
-            music.setLabel(sc.nextLine().split(","));
-
-            System.out.print("\nKey: ");
-            music.setKey(Byte.parseByte(sc.nextLine()));
-
-            System.out.print("\nTime Signature: ");
-            music.setTimeSignature(Byte.parseByte(sc.nextLine()));
-
-            sc.close();
-            inserirMusica(music);
-        }
-        catch(Exception e)
-        {
-            System.out.println("\n\nERRO: Parâmetro incorreto\n\n");
-        }
-
-
-    }
-
-    public void teste ()
-    {
-
-        try 
-        {
-
-            RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
-            long filePointer = ra.getFilePointer();
-
-            boolean array = ra.readBoolean();
-
-            for(int i = 0; i < 1; i++)
-            {
-                System.out.println(array);
-            }
-
-            ra.close();
-
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-        }
         
 
     }
