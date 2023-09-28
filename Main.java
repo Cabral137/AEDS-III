@@ -1,4 +1,5 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 class Main 
 {
@@ -6,7 +7,6 @@ class Main
     public static void main(String[] args) throws Exception
     {
 
-        Scanner  sc  = new Scanner(System.in);
         Binario  bin = new Binario(); 
         Intercal inc = new Intercal();
         int acao = 0;
@@ -18,14 +18,22 @@ class Main
 
             System.out.println("\nOpções:\n" +
                                "1 - Carregar CSV\n" +
-                               "2 - Ler musica\n" +
+                               "2 - Pesquisar musica\n" +
                                "3 - Adicionar musica\n" +
                                "4 - Excluir musica\n" +
                                "5 - Atualizar musica\n" +
                                "6 - Testes\n" +
-                               "7 - Sair\n");
+                               "7 - Sair\n");            
 
-            acao = Integer.parseInt(sc.nextLine());
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            try
+            {
+                acao = Integer.parseInt(br.readLine());
+            }
+            catch(Exception e)
+            {
+                acao = 7;
+            }
 
             switch (acao)
             {
@@ -53,11 +61,11 @@ class Main
                 inc.balanceada(100, 5);
                 break;
 
-            }
+            }        
 
         }
 
-        sc.close();
+
 
     }
 
