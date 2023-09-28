@@ -3,6 +3,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -162,9 +163,20 @@ class Binario
     public void CarregarCSV () throws Exception
     {
 
+        try
+        {
+            File excluir = new File ("SpotifyMusic.hex");
+            excluir.delete();
+        }
+        catch(Exception e)
+        {
+
+        }
+
         BufferedReader scF  = new BufferedReader(new InputStreamReader(new FileInputStream("SpotifyMusic.csv"),"UTF-8"));
         RandomAccessFile rf = new RandomAccessFile("SpotifyMusic.hex", "rw");
         int contador = 0;
+        rf.writeInt(0);
 
         while(scF.ready())
         {
@@ -177,16 +189,24 @@ class Binario
                         
                 Musica music = new Musica();
                 music = music.preencherObjeto(smp);
-                music.setID(contador); contador++;
+                music.setID(contador);
 
                 byte [] tmp = toByteArray(music);
-
                 rf.writeBoolean(false);
                 rf.writeShort(tmp.length);
                 rf.write(tmp);
+
+                long ponteiro = rf.getFilePointer();          // Atualiza o primeiro byte do arquivo com o ultimo ID inserido
+                rf.seek(0);
+                rf.writeInt(contador);
+                rf.seek(ponteiro);
+
+                contador++;
             }
 
         }
+
+        System.out.println("\n\n\tARQUIVOS CARREGADOS\n\n");
 
     }
 
@@ -198,6 +218,7 @@ class Binario
         try 
         {
             RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "r");
+            ra.readInt();
 
             long filePointer = ra.getFilePointer();
 
@@ -253,17 +274,55 @@ class Binario
         System.out.print("ID da música: ");
         int ID = Integer.parseInt(sc.nextLine());
 
-        Musica music = LerMusicaID(ID);
-        music.setID(ID);
 
-        music.imprimir();
+        RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "rw");
+
+        if(ra.readInt() < ID)
+        {
+            System.out.println("\n\n\tNÃO EXISTE UMA MÚSICA COM ESSE ID\n\n");
+        }
+        else
+        {
+            Musica music = LerMusicaID(ID);
+
+            if(music == null)
+            {
+                System.out.println("\n\n\tNÃO EXISTE UMA MÚSICA COM ESSE ID\n\n");
+            }
+            else
+            {
+                music.setID(ID);
+                music.imprimir();
+            }
+
+        }
 
 
     }
 
     public void inserirMusica (Musica music)
     {
+
+        try
+        {
+            RandomAccessFile ra = new RandomAccessFile("SpotifyMusic.hex", "rw");
+            int id = ra.readInt();
+            ra.writeInt(id + 1);
+            music.setID(id);
+            ra.seek(ra.length());
+
+            byte [] tmp = toByteArray(music);
+
+            ra.writeBoolean(false);
+            ra.writeShort(tmp.length);
+            ra.write(tmp);
+        }
+        catch(Exception e)
+        {
+            System.out.println("\n\nERRO: Não foi possível inserir a música");
+        }
         
+
     }
 
     public void AddMusica () throws Exception   
@@ -272,56 +331,64 @@ class Binario
         Scanner sc = new Scanner(System.in);
         Musica music = new Musica();
         String tmp = "";
-        
-        System.out.print("\nNome: ");
-        music.setName(sc.nextLine());
 
-        System.out.print("\nArtistas:");
-        music.setArtists(sc.nextLine().split(","));
-
-        System.out.print("\nAlbum: ");
-        music.setAlbumName(sc.nextLine());
-
-        System.out.print("\nData de Lançamento: ");
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        music.setReleaseDate(format.parse(sc.nextLine()));
-
-        System.out.print("\nLink Imagem do Album: ");
-        music.setAlbumImage(sc.nextLine());
-
-        System.out.print("\nDuração: ");
-        music.setDuration(Integer.parseInt(sc.nextLine()));
-
-        System.out.print("\nExplícito: ");
-        System.out.println("- SIM\n- NÃO");
-        tmp = sc.nextLine();
-
-        if(tmp.equals("SIM"))
+        try
         {
-            music.setExplicit(true);
+            System.out.print("\nNome: ");
+            music.setName(sc.nextLine());
+
+            System.out.print("\nArtistas: ");
+            music.setArtists(sc.nextLine().split(","));
+
+            System.out.print("\nAlbum: ");
+            music.setAlbumName(sc.nextLine());
+
+            System.out.print("\nData de Lançamento: ");
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            music.setReleaseDate(format.parse(sc.nextLine()));
+
+            System.out.print("\nLink Imagem do Album: ");
+            music.setAlbumImage(sc.nextLine());
+
+            System.out.print("\nDuração: ");
+            music.setDuration(Integer.parseInt(sc.nextLine()));
+
+            System.out.print("\nExplícito: ");
+            System.out.println("\n- SIM\n- NÃO\n");
+            tmp = sc.nextLine();
+
+            if(tmp.equals("SIM"))
+            {
+                music.setExplicit(true);
+            }
+            else
+            {
+                music.setExplicit(false);
+            }
+
+            System.out.print("\nGeneros: ");
+            music.setGenres(sc.nextLine().split(","));
+
+            System.out.print("\nTempo: ");
+            music.setTempo(Float.parseFloat(sc.nextLine()));
+
+            System.out.print("\nLabel: ");
+            music.setLabel(sc.nextLine().split(","));
+
+            System.out.print("\nKey: ");
+            music.setKey(Byte.parseByte(sc.nextLine()));
+
+            System.out.print("\nTime Signature: ");
+            music.setTimeSignature(Byte.parseByte(sc.nextLine()));
+
+            sc.close();
+            inserirMusica(music);
         }
-        else
+        catch(Exception e)
         {
-            music.setExplicit(false);
+            System.out.println("\n\nERRO: Parâmetro incorreto\n\n");
         }
 
-        System.out.print("\nGeneros:");
-        music.setGenres(sc.nextLine().split(","));
-
-        System.out.print("\nTempo: ");
-        music.setTempo(Float.parseFloat(sc.nextLine()));
-
-        System.out.print("\nLabel:");
-        music.setLabel(sc.nextLine().split(","));
-
-        System.out.print("\nKey: ");
-        music.setKey(Byte.parseByte(sc.nextLine()));
-
-        System.out.print("\nTime Signature: ");
-        music.setTimeSignature(Byte.parseByte(sc.nextLine()));
-
-        sc.close();
-        inserirMusica(music);
 
     }
 
