@@ -131,8 +131,27 @@ public class Huffman
             return;
         }
 
-        printTabela(no.getLeft(), linha + "0");
-        printTabela(no.getRigth(), linha + "1");
+        printTabela(no.getLeft(),  linha + "1");
+        printTabela(no.getRigth(), linha + "0");
+
+    }
+
+    public static void printCompress (Node no, String linha, char element)
+    {
+
+        if(no != null)
+        {
+            if(element == no.getElemento())
+            {
+                System.out.print(linha);
+            }
+            else
+            {
+                printCompress(no.getLeft(),  linha + 0, element);
+                printCompress(no.getRigth(), linha + 1, element);
+            }
+
+        }
 
     }
 
@@ -173,7 +192,11 @@ public class Huffman
                 lizt.add(notmp);
             }
 
-            printTabela (raiz, "");
+            for(int i = 0; i < linha.length(); i++)
+            {
+                printCompress(raiz, "", linha.charAt(i));
+            }
+            
 
         }
         catch(Exception e)
