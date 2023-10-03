@@ -38,6 +38,25 @@ class Node
         return(this.rigth);
     }
 
+    public void setQuant (int insert)
+    {
+       this.quant = insert;
+    }
+
+    public int getQuant ()
+    {
+       return(this.quant);
+    }    
+
+    public void setElemento (char insert)
+    {
+       this.elemento = insert;
+    }
+
+    public char getElemento ()
+    {
+       return(this.elemento);
+    }    
 
 
 }
@@ -58,18 +77,18 @@ public class Huffman
             }
         }
 
-        for(int i = 0; i < resp.size(); i++)
-        {
-            System.out.println(resp.get(i));
-        }
-
         return (resp);
 
     }
 
     public static Vector <Integer> getQuant (String linha, Vector <Character> vetorChar)
     {
-        Vector <Integer> resp = new Vector <Integer> (vetorChar.size());
+        Vector <Integer> resp = new Vector <Integer> ();
+
+        for(int i = 0; i < vetorChar.size(); i++)
+        {
+            resp.add(0);
+        }
 
         for(int i = 0; i < linha.length (); i++)
         {
@@ -77,18 +96,43 @@ public class Huffman
             {
                 if(linha.charAt(i) == vetorChar.get(j))
                 {
-                    resp.set(j, (resp.get(i) + 1));
-                    break;
+                    resp.set(j, (resp.get(j) + 1));
                 }
-                else
-                {
-                    break;
-                }
-                
             }
         }
 
         return (resp);
+
+    }
+
+    public static int getMenor (Vector<Node> lizt)
+    {
+        int menor = lizt.get(0).getQuant();
+        int resp  = 0;
+
+        for(int i = 0; i < lizt.size(); i++)
+        {
+            if(menor > lizt.get(i).getQuant())
+            {
+                menor = lizt.get(i).getQuant();
+                resp  = i;
+            }
+        }
+
+        return (resp);
+    }
+
+    public static void printTabela (Node no, String linha)
+    {
+
+        if(no.getLeft() == null && no.getRigth() == null && Character.isLetter(no.getElemento()))
+        {
+            System.out.println(no.getElemento() + ": " + linha);
+            return;
+        }
+
+        printTabela(no.getLeft(), linha + "0");
+        printTabela(no.getRigth(), linha + "1");
 
     }
 
@@ -104,10 +148,32 @@ public class Huffman
             Vector <Character> vetorChar  = diffChars (linha);
             Vector <Integer>   vetorQuant = getQuant  (linha, vetorChar);
 
+            Vector <Node> lizt = new Vector <Node> ();
+
             for(int i = 0; i < vetorChar.size(); i++)
             {
-                System.out.println(vetorChar.get(i) + " --- " + vetorQuant.get(i));
+                lizt.add(new Node (vetorQuant.get(i), vetorChar.get(i)));
             }
+            
+            Node raiz = new Node(0, '-');
+
+            while(lizt.size() > 1)
+            {
+                Node tmp1 = lizt.remove(getMenor(lizt));
+                Node tmp2 = lizt.remove(getMenor(lizt));
+
+                Node notmp = new Node (0, '-');
+
+                notmp.setLeft (tmp1);
+                notmp.setRigth(tmp2);
+                notmp.setQuant(tmp1.getQuant() + tmp2.getQuant());
+
+                raiz = notmp;
+
+                lizt.add(notmp);
+            }
+
+            printTabela (raiz, "");
 
         }
         catch(Exception e)
