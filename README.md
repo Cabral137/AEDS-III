@@ -2,12 +2,12 @@
 
 Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dados III
 
-## Trabalho Prático I
+## - Trabalho Prático I
 
-## Trabalho Prático II
+## - Trabalho Prático II
 
-## Trabalho Prático III
+## - Trabalho Prático III
 
-## Compressão
+## - Compressão
 
-## Casamento de Padrões
+## - Casamento de Padrões
