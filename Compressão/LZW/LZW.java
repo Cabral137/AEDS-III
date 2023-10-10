@@ -1,24 +1,21 @@
 import java.util.Vector;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 
 public class LZW
 {
     
-    public static Vector <Character> diffChars (String linha)
+    public static void diffChars (String linha, Vector <Character> array)
     {
-
-        Vector <Character> resp = new Vector<Character> ();
 
         for(int i = 0; i < linha.length (); i++)
         {
-            if(!resp.contains(linha.charAt(i)))
+            if(!array.contains(linha.charAt(i)))
             {
-                resp.add(linha.charAt(i));
+                array.add(linha.charAt(i)); 
             }
         }
-
-        return (resp);
 
     }
     
@@ -28,22 +25,45 @@ public class LZW
 		
 		try 
 		{
-		   	BufferedReader br = new BufferedReader(new InputStreamReader (System.in, "ISO-8859-1"));
-            String linha = br.readLine(); 
+            RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.csv", "r");
+            RandomAccessFile rb = new RandomAccessFile("./Spotify.txt", "rw");
 
-            System.out.println(linha);
+		   	BufferedReader br = new BufferedReader(new InputStreamReader (System.in, "ISO-8859-1"));
+            String linha = ""; 
+
+            while(ra.getFilePointer() != ra.length())
+            {
+                linha = linha + ra.readLine();
+            }
+
+            Vector <Character> dicionario = new Vector <Character> ();
+
+            for(int i = 0; i < 26; i++)
+            {
+                dicionario.add((char)('a' + i));
+            }
+
+            for(int i = 0; i < 26; i++)
+            {
+                dicionario.add((char)('A' + i));
+            }
             
-            Vector <Character> dicionario = diffChars(linha); 
+            diffChars(linha, dicionario);
 
             for(int i = 0; i < dicionario.size(); i++)
             {
-                System.out.println(dicionario.get(i) + "\t" + i);
+                System.out.println(dicionario.get(i) + "\t" + Integer.toBinaryString(i)); 
+            }
+
+            for(int i = 0; i < linha.length(); i++)
+            {
+                rb.writeBytes((Integer.toBinaryString(dicionario.indexOf(linha.charAt(i))))); 
             }
             
 		} 
 		catch(Exception e) 
 		{
-		    System.out.println("ERRO: ERRO");
+		    e.printStackTrace();
 		}
 
 		
