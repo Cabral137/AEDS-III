@@ -140,8 +140,8 @@ public class Huffman
                 return;
             }
 
-            printTabela(no.getLeft(),  linha + "1");
-            printTabela(no.getRigth(), linha + "0");
+            printTabela(no.getLeft(),  linha + "0");
+            printTabela(no.getRigth(), linha + "1");
         }
 
     }
@@ -158,7 +158,7 @@ public class Huffman
                     RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.txt", "rw");
                     ra.seek(ra.length());
                     
-                    ra.writeBytes(linha); 
+                    ra.writeBytes(linha + "\n"); 
 
                     System.out.print(no.getElemento());
 
@@ -197,12 +197,12 @@ public class Huffman
 
                     if(ra.readByte() == '0')
                     {
-                        pos = ra.getFilePointer();
+                        this.pos = this.pos + 1;
                         this.printDecompressed (no.getLeft());
                     }
                     else
                     {
-                        pos = ra.getFilePointer();
+                        this.pos = this.pos + 1;
                         this.printDecompressed (no.getRigth());
                     }
                 }
@@ -230,7 +230,7 @@ public class Huffman
         
             String linha = ra.readLine();
 
-            for(int i = 0; i < 100; i++)
+            for(int i = 0; i < 3; i++)
             {
                 linha = linha + ra.readLine();
             }
@@ -263,20 +263,16 @@ public class Huffman
                 lizt.add(notmp);
             }
 
-            // for(int i = 0; i < linha.length(); i++)
-            // {
-            //     printCompress(raiz, "", linha.charAt(i));
-            // }
+            for(int i = 0; i < linha.length(); i++)
+            {
+                printCompress(raiz, "", linha.charAt(i));
+            }
 
             printTabela(raiz, "");
 
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < 100; i++)
             {
-                System.out.println(hf.pos);
                 hf.printDecompressed(raiz);
-                System.out.println("\n" + hf.pos);      
-                
-                System.out.println("\n\n\n");
             }
 
         }
