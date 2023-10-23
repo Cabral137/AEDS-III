@@ -146,30 +146,19 @@ public class Huffman
 
     }
 
-    public static void printCompress (Node no, String linha, char element)
+    public static void printCompress (Node no, String linha, char element, String [] resp)
     {
 
         if(no != null)
         {
             if(element == no.getElemento())
             {
-                try
-                {
-                    RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.txt", "rw");
-                    ra.seek(ra.length());
-                    
-                    ra.writeBytes(linha);
-
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
+                System.out.println("ACHOU"); resp[0] = linha;
             }
             else
             {
-                printCompress(no.getLeft(),  linha + 0, element);
-                printCompress(no.getRigth(), linha + 1, element);
+                printCompress(no.getLeft(),  linha + 0, element, resp);
+                printCompress(no.getRigth(), linha + 1, element, resp);
             }
 
         }
@@ -215,6 +204,39 @@ public class Huffman
 
     }
 
+    public static void readbits ()
+    {
+
+        try
+        {
+            RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.csv", "r");
+
+            String bits = "1110000";
+
+            String sequencia = "0010101011100101011111001010010111110100101010000001010101010010101";
+
+            for(int i = 7; i < sequencia.length(); i = i + 8)
+            {
+                String porta = sequencia.substring(i);
+
+                System.out.println("\n\n");
+                System.out.println(sequencia);
+                System.out.println(porta);
+            }
+
+
+            System.out.println((char)Integer.parseInt(bits, 2));
+            System.out.println(Integer.toBinaryString((int) 'p'));
+
+
+        }
+        catch(Exception e)
+        {
+
+        }
+
+    }
+
     public static void main(String[] args) 
     {
 
@@ -222,13 +244,14 @@ public class Huffman
 
         try
         {
+
             RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.csv", "r");
 
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
             String linha = ra.readLine();
 
-            for(int i = 0; i < 9996; i++)
+            for(int i = 0; i < 10; i++)
             {
                 linha = linha + ra.readLine();
             }
@@ -260,20 +283,30 @@ public class Huffman
 
                 lizt.add(notmp);
             }
+            
+            String comp = "";
 
-            
-            
-            for(int i = 0; i < linha.length(); i++)
+            for(int i = 0; i < 10; i++)
             {
-                printCompress(raiz, "", linha.charAt(i));
+                String [] resp = {""};
+                printCompress(raiz, "", linha.charAt(i), resp);
+                comp = comp + resp[0];
             }
 
+            System.out.println(comp);
+            System.out.println(comp);
+
+            /*
             printTabela(raiz, "");
 
             while(true)
             {
                 hf.printDecompressed(raiz);
             }
+
+
+            */
+
 
         }
         catch(Exception e)
