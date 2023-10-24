@@ -294,7 +294,20 @@ public class Huffman
             }
 
             System.out.println(comp);
-            System.out.println(comp);
+
+            for(int i = 0; i < comp.length(); i = i + 8)
+            {
+                if(i + 8 < comp.length())
+                {
+                    System.out.println(comp.substring(i, i+8));
+                    System.out.println((char)Integer.parseInt(comp.substring(i, i+8), 2) );
+                }
+                else
+                {
+                    System.out.println(comp.substring(i, comp.length()));
+                }
+                
+            }
 
             /*
             printTabela(raiz, "");
