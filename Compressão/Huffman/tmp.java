@@ -304,7 +304,16 @@ public class Huffman
                 }
                 else
                 {
-                    System.out.println(comp.substring(i, comp.length()));
+                    
+                    String fix = comp.substring(i, comp.length());
+
+                    while(fix.length() != 8)
+                    {
+                        fix = fix + 0;
+                    }
+
+                    System.out.println(fix);
+                    System.out.println((char)Integer.parseInt(fix));
                 }
                 
             }
