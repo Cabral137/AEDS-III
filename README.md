@@ -4,7 +4,7 @@ Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dad
 
 ## - [Trabalho Prático I](/TP01)
 
-## - [Trabalho Prático II]()
+## - [Trabalho Prático II](/TP02)
 
 ## - [Trabalho Prático III]()
 
