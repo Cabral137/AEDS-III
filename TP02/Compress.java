@@ -17,15 +17,16 @@ class Compress
         int action = Integer.parseInt(sc.nextLine());
 
         System.out.print("\nNome do arquivo: ");
-        String arquivo = sc.nextLine();
+        String path = sc.nextLine();
 
         switch (action) 
         {
             case 1:
-            // HUFFMAN (arquivo);
+            Huffman hf = new Huffman();
+            hf.comprimir(path);
             break;
 
-            case 2;
+            case 2:
             // LZW (arquivo);
             break;
         
