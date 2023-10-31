@@ -11,6 +11,7 @@ class Node
     private Node left;
     private Node rigth;
     private char elemento;
+    public  String caminho;
 
     Node (int quant, char elemento)
     {
@@ -243,6 +244,23 @@ public class Huffman
 
     }
 
+    public static void preencheCaminho (Node no, String linha, Node element)
+    {
+        if(no != null)
+        {
+            if(element.getElemento() == no.getElemento())
+            {
+                element.caminho = linha;
+            }
+            else
+            {
+                preencheCaminho (no.getLeft(),  linha + 0, element);
+                preencheCaminho (no.getRigth(), linha + 1, element);
+            }
+
+        }
+    }
+
     public void descomprimir (String nome)
     {
 
@@ -302,7 +320,17 @@ public class Huffman
             }
 
             System.out.println(3);
-            
+
+            for(int i = 0; i < lizt.size(); i++)
+            {
+                preencheCaminho(raiz, "", lizt.get(i));
+            }
+
+            for(int i = 0; i < lizt.size(); i++)
+            {
+                System.out.println(lizt.get(i).getElemento() + " --- " + lizt.get(i).caminho);
+            }
+
             String comp = "";
 
             for(int i = 0; i < linha.length(); i++)
