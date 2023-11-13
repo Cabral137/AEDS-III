@@ -12,5 +12,5 @@ Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dad
    - [Huffman](/Compressão/Huffman)
    - [LZW](/Compressão/LZW)
 
-## - [Casamento de Padrões](/Casamento_de_Padrões)
-   - [KMP](/Casamento_de_Padrões/KMP)
+## - [Casamento de Padrões](/Casamento%20de%20Padrões)
+   - [KMP](/Casamento%20de%20Padrões/KMP)
