@@ -14,3 +14,4 @@ Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dad
 
 ## - [Casamento de Padrões](/Casamento%20de%20Padrões)
    - [KMP](/Casamento%20de%20Padrões/KMP)
+   - [Boyer-Moore](/Casamento%20de%20Padrões/Boyer-Moore)
