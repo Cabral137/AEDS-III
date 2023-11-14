@@ -34,27 +34,38 @@ class Hash
 public class BoyerMoore 
 {
 
+    public void goodSufix (String frase)
+    {
+
+        
+
+    }
+
     public static void badCharSearch ()
     {
         Scanner sc  = new Scanner (System.in);
         Hash tabela = new Hash();
 
-        String frase   = "ABCDSJG COCA WJFIW COCACOLALSFHV";
+        String frase   = "PRUBUGBWG IWFIFWIWFB OWQUFGWUFVOWUF COCACOCACOLARGWWOUBWGOUWGB";
         String palavra = "COCACOLA";
         
         tabela.badChar(palavra);
 
         int o = palavra.length() - 1;
 
-        for(int i = palavra.length(); i < frase.length(); i--)
+        int i = palavra.length() - 1;
+            
+        while(i < frase.length())
         {
             System.out.println(i);
 
+            System.out.println(palavra.charAt(o) + " --- " + frase.charAt(i));
             if(palavra.charAt(o) == frase.charAt(i))
             {
                 o--;
+                i--;
 
-                if(o == 0)
+                if(o == 1)
                 {
                     System.out.println("ACHOU");
                     break;
