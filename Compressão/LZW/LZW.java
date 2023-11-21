@@ -50,26 +50,16 @@ public class LZW
 
             if(dicionario.contains(prefix))
             {
-                comp = comp + (int) linha.charAt(linha.length() - 1);
+                comp = comp + prefix;
             }
 
-            String [] verify = comp.split(" ");
-
-            for(int i = 0; i < verify.length; i++)
-            {
-                System.out.print(dicionario.get(Integer.parseInt(verify[i])));
-            }
-
-            System.out.println("\n"+dicionario.size());
-            System.out.println(comp);
-
-            RandomAccessFile wa = new RandomAccessFile("./CompLZW.txt", "rw");
+            RandomAccessFile wa = new RandomAccessFile("./Compressed.lzw", "rw");
             wa.writeBytes(comp);
 
         }
         catch (Exception e) 
         {
-            e.printStackTrace();
+            System.out.println("ERRO: Falha ao comprimir o arquivo");
         }
     }
 
@@ -116,106 +106,21 @@ public class LZW
 
             }
 
-            System.out.println(decomp);
+            RandomAccessFile wa = new RandomAccessFile("./ARQUIVOS/Decompressed.lzw" , "rw");
+            wa.writeBytes(decomp);
   
 		} 
 		catch(Exception e) 
 		{
-            e.printStackTrace();
+            System.out.println("ERRO: Falha ao descomprimir o arquivo");
 		}  
     }
     
-
-	public static void main(String[] args) 
-	{
-		
-		// try 
-		// {
-        //     Scanner sc = new Scanner(System.in);
-
-        //     // System.out.print("\nNome do arquivo: ");
-        //     // String path = sc.nextLine();
-
-        //     // RandomAccessFile ra = new RandomAccessFile("./" + path, "r");
-        //     // String linha = "";
-
-        //     // while(ra.getFilePointer() != ra.length())
-        //     // {
-        //     //     linha = linha + ra.readLine();
-        //     // }
-
-        //     Vector <String> dicionario = new Vector <String> ();
-
-        //     for(int i = 0; i < 256; i++)
-        //     {
-        //         dicionario.add("" + (char) i);
-        //     }
-
-        //     String frase  = "WYS*WYGWYS*WYSWYSG";
-        //     String prefix = "";
-        //     String comp   = "";
-
-        //     for(int i = 0; i < frase.length(); i++)
-        //     {
-        //         prefix = prefix + frase.charAt(i);
-
-        //         if(!dicionario.contains(prefix))
-        //         {
-        //             dicionario.add(prefix);
-        //             comp   = comp + (dicionario.indexOf(prefix.substring(0, prefix.length()- 1)) + " ");
-        //             prefix = "" + frase.charAt(i);
-        //         }
-        //     }
-
-        //     String [] verify = comp.split(" ");
-        //     if(Integer.parseInt(verify[verify.length - 1]) > 255)
-        //     {
-        //         comp = comp + (int) frase.charAt(frase.length() - 1);
-        //     }
-
-        //     System.out.println(comp);
-
-        //     // for(int i = 0; i < dicionario.size(); i++)
-        //     // {
-        //     //     System.out.println(dicionario.get(i) + " --- " + i);
-        //     // }
-
-        //     String [] nums = comp.split(" ");
-        //     String decomp  = "";
-        //     String aux     = "";
-
-        //     dicionario = new Vector<String>();
-
-        //     for(int i = 0; i < 256; i++)
-        //     {
-        //         dicionario.add("" + (char) i);
-        //     }
-
-        //     for(int i = 0; i < nums.length; i++)
-        //     {
-
-        //         aux = aux + dicionario.get(Integer.parseInt(nums[i])).charAt(0);
-
-        //         decomp = decomp + dicionario.get(Integer.parseInt(nums[i]));
-
-        //         if(!dicionario.contains(aux))
-        //         {
-        //             dicionario.add(aux);
-        //             aux = dicionario.get(Integer.parseInt(nums[i]));
-        //         }
-
-        //     }
-
-        //     System.out.println(decomp);
-  
-		// } 
-		// catch(Exception e) 
-		// {
-		//     e.printStackTrace();
-		// }
-
+    public void run ()
+    {
         compress();
         decompress();
-		
-	}
+    }
+
+
 }
