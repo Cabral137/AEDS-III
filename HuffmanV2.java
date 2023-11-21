@@ -62,12 +62,12 @@ class Node
 
 }
 
-public class HuffmanV2
+public class Huffman
 {
 
     long pos;
 
-    HuffmanV2 ()
+    Huffman ()
     {
 
     }
@@ -278,7 +278,7 @@ public class HuffmanV2
                         fix = '0' + fix;
                     }
 
-                    texto = texto + Integer.toBinaryString((int)tmp.charAt(i));
+                    texto = texto + fix;
                 }
                 
             }
@@ -317,14 +317,18 @@ public class HuffmanV2
         }
 
     }
-    
-    public static void main(String[] args) 
+
+    public static void run ()
     {
-    
-        HuffmanV2 hf  = new HuffmanV2();
+        Scanner sc = new Scanner(System.in);
+        Huffman hf = new Huffman();
         int [] quant = hf.comprimir();
-        System.out.println("\n");
-        hf.descomprimir(quant);
+        System.out.println("\nDeseja descomprimir o arquivo?\n- SIM\n- NÃO\n\n");
+
+        if(sc.nextLine().equals("SIM"))
+        {
+            hf.descomprimir(quant);
+        }
     }
 
 }
