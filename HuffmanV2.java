@@ -136,9 +136,8 @@ public class HuffmanV2
 
     }
 
-    public String [] fazerTabela (int [] quant)
+    public Node fazerArvore (int [] quant)
     {
-
         Vector <Node> lizt = new Vector <Node> ();
 
         for(int i = 0; i < quant.length; i++)
@@ -172,15 +171,22 @@ public class HuffmanV2
             preencheCaminho(raiz, "", lizt.get(i));
         }
 
+        return(raiz);
+    }
+
+    public String [] fazerTabela (int [] quant)
+    {
+
         String [] tabela = new String [256];
 
+        Node raiz = fazerArvore(quant);
         getElemento(raiz, "", tabela);
 
         return(tabela);
 
     }
 
-    public String [] comprimir ()
+    public int [] comprimir ()
     {
 
         try 
@@ -190,7 +196,7 @@ public class HuffmanV2
             System.out.print("\nNome do arquivo: ");
             String path = sc.nextLine();
 
-            RandomAccessFile ra = new RandomAccessFile("./" + path + ".txt", "r");
+            RandomAccessFile ra = new RandomAccessFile("./" + path, "r");
             String content  = "";
             String compress = "";
 
@@ -207,8 +213,6 @@ public class HuffmanV2
                 compress = compress + tabela[ (int) content.charAt(i) ];
             }
 
-            System.out.println(compress);
-
             String write = "";
 
             for(int i = 0; i < compress.length(); i = i + 8)
@@ -219,7 +223,6 @@ public class HuffmanV2
                 }
                 else
                 {
-                    
                     String fix = compress.substring(i, compress.length());
 
                     while(fix.length() != 8)
@@ -232,9 +235,11 @@ public class HuffmanV2
                 
             }
 
-            System.out.println(write);
+            RandomAccessFile wa = new RandomAccessFile("./ARQUIVOS/CompHuffman.hex", "rw");
+
+            wa.writeBytes(write);
             
-            return(tabela);
+            return(quant);
 
         } 
         catch (Exception e) 
@@ -242,57 +247,67 @@ public class HuffmanV2
             e.printStackTrace();
         }
 
-        return(new String [0]);
+        return(new int [0]);
 
     }
 
-    public void descomprimir (String [] tabela)
+    public void descomprimir (int [] quant)
     {
 
         try 
         {
+
             Scanner sc = new Scanner(System.in);
 
-            System.out.print("\nNome do arquivo: ");
-            String path = sc.nextLine();
+            //System.out.print("\nNome do arquivo: ");
+            String path = "CompHuffman.hex"; //sc.nextLine();
 
-            RandomAccessFile ra = new RandomAccessFile("./" + path + ".txt", "r");
+            RandomAccessFile ra = new RandomAccessFile("./ARQUIVOS/" + path, "r");
             String texto = "";
-            String frase = "Ï­?«♫7?♂ðã~ o[â?áß?←ò¦÷?Dß?←ð¬÷¹ÞCÏ?z)Mû?¡£½òÑ?♫´ » §kIa¬ºË¬?"; // ABCKAGVFGBIVBLOVBAJSVBAWIVBFVBS:XAJVBASIVBAV:XVBJÂVBASIVBALKXVBXJVBZXM<VBWVLJXBXJBVUWBXVBYCI&RCKYGFCYTDCKYFGCKFCKFCKFC
 
-            // while(ra.getFilePointer() != ra.length())
-            // {
-            //     texto = texto + Integer.toBinaryString((int)ra.readByte());
-            // }
-
-            for(int i = 0; i < frase.length(); i++)
+            while(ra.getFilePointer() != ra.length())
             {
-                texto = texto + Integer.toBinaryString((int) frase.charAt(i));
+                String tmp = ra.readLine();
+
+                for(int i = 0; i < tmp.length(); i++)
+                {
+                    String fix = Integer.toBinaryString((int)tmp.charAt(i));
+
+                    while(fix.length() < 8)
+                    {
+                        fix = '0' + fix;
+                    }
+
+                    texto = texto + Integer.toBinaryString((int)tmp.charAt(i));
+                }
+                
             }
 
-            System.out.println(texto);
-
+            Node raiz = fazerArvore(quant);
+            Node tmp  = raiz;
             String resp = "";
-            int aux = 0;
 
             for(int i = 0; i < texto.length(); i++)
             {
-
-                String tmp = texto.substring(aux, i);
-
-                for(int j = 0; j < tabela.length; j++)
+                if(texto.charAt(i) == '0')
                 {
-                    if(tmp.equals(tabela[j]))
-                    {
-                        resp = resp + ((char) j);
-                        aux  = i; 
-                        tmp = "";
-                        break;
-                    }
+                    tmp = tmp.getLeft();
+                }
+                else
+                {
+                    tmp = tmp.getRigth();
+                }
+
+                if(tmp.getLeft() == null && tmp.getRigth() == null)
+                {
+                    resp = resp + tmp.getElemento();
+                    tmp = raiz;
                 }
             }
 
-            System.out.println(resp);
+            RandomAccessFile wa = new RandomAccessFile("./ARQUIVOS/DescompHuffman.txt", "rw");
+
+            wa.writeBytes(resp);
 
 
         }
@@ -306,11 +321,10 @@ public class HuffmanV2
     public static void main(String[] args) 
     {
     
-        HuffmanV2 hf = new HuffmanV2();
-        String [] tabela = hf.comprimir();
-        System.out.println("\n\n\n");
-        hf.descomprimir(tabela);
-
+        HuffmanV2 hf  = new HuffmanV2();
+        int [] quant = hf.comprimir();
+        System.out.println("\n");
+        hf.descomprimir(quant);
     }
 
 }
