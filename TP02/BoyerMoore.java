@@ -47,7 +47,7 @@ public class BoyerMoore
 
             String frase = ra.readLine();
 
-            System.out.println("\nFrase para pesquisar: ");
+            System.out.print("\nFrase para pesquisar: ");
             String palavra = sc.nextLine();
 
             pesquisa(frase, palavra);
