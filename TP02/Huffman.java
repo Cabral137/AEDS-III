@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 import java.io.RandomAccessFile;
 import java.util.Vector;
 
@@ -64,7 +62,7 @@ class Node
 
 }
 
-public class Huffman 
+public class Huffman
 {
 
     long pos;
@@ -74,46 +72,14 @@ public class Huffman
 
     }
 
-    public static Vector <Character> diffChars (String linha, Vector <Integer> vetorQuant)
+    public static int [] quantChar (String linha)
     {
 
-        Vector <Character> resp = new Vector<Character> ();
+        int [] resp = new int [256];
 
-        for(int i = 0; i < linha.length (); i++)
+        for(int i = 0; i < linha.length(); i++)
         {
-            if(!resp.contains(linha.charAt(i)))
-            {
-                resp.add(linha.charAt(i));
-                vetorQuant.add(1);
-            }
-            else
-            {
-                vetorQuant.setElementAt(vetorQuant.get(resp.indexOf(linha.charAt(i))), resp.indexOf(linha.charAt(i)));
-            }
-        }
-
-        return (resp);
-
-    }
-
-    public static Vector <Integer> getQuant (String linha, Vector <Character> vetorChar)
-    {
-        Vector <Integer> resp = new Vector <Integer> ();
-
-        for(int i = 0; i < vetorChar.size(); i++)
-        {
-            resp.add(0);
-        }
-
-        for(int i = 0; i < linha.length (); i++)
-        {
-            for(int j = 0; j < vetorChar.size(); j++)
-            {
-                if(linha.charAt(i) == vetorChar.get(j))
-                {
-                    resp.set(j, (resp.get(j) + 1));
-                }
-            }
+            resp[(int) linha.charAt(i)]++;
         }
 
         return (resp);
@@ -137,113 +103,6 @@ public class Huffman
         return (resp);
     }
 
-    public static void printTabela (Node no, String linha)
-    {
-        if(no != null)
-        {
-            if(no.getLeft() == null && no.getRigth() == null)
-            {
-                System.out.println(no.getElemento() + ": " + linha);
-                return;
-            }
-
-            printTabela(no.getLeft(),  linha + "0");
-            printTabela(no.getRigth(), linha + "1");
-        }
-
-    }
-
-    public static void printCompress (Node no, String linha, char element, String [] resp)
-    {
-
-        if(no != null)
-        {
-            if(element == no.getElemento())
-            {
-                resp[0] = linha;
-            }
-            else
-            {
-                printCompress(no.getLeft(),  linha + 0, element, resp);
-                printCompress(no.getRigth(), linha + 1, element, resp);
-            }
-
-        }
-
-    }
-
-    public void printDecompressed (Node no, String [] resp)
-    {
-
-        if(no != null)
-        {
-
-            if(no.getLeft() == null && no.getRigth() == null)
-            {
-                resp[0] = resp[0] + no.getElemento();
-            }
-            else
-            {
-                try
-                {
-                    RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.txt", "r");
-                    ra.seek(pos);
-
-                    if(ra.readByte() == '0')
-                    {
-                        this.pos = this.pos + 1;
-                        this.printDecompressed (no.getLeft(), resp);
-                    }
-                    else
-                    {
-                        this.pos = this.pos + 1;
-                        this.printDecompressed (no.getRigth(), resp);
-                    }
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-            }
-
-        }
-
-    }
-
-    public static void readbits ()
-    {
-
-        try
-        {
-            RandomAccessFile ra = new RandomAccessFile("./SpotifyMusic.csv", "r");
-
-            String bits = "1110000";
-
-            String sequencia = "0010101011100101011111001010010111110100101010000001010101010010101";
-
-            for(int i = 7; i < sequencia.length(); i = i + 8)
-            {
-                String porta = sequencia.substring(i);
-
-                System.out.println("\n\n");
-                System.out.println(sequencia);
-                System.out.println(porta);
-            }
-
-
-            System.out.println((char)Integer.parseInt(bits, 2));
-            System.out.println(Integer.toBinaryString((int) 'p'));
-
-
-        }
-        catch(Exception e)
-        {
-
-        }
-
-    }
-
     public static void preencheCaminho (Node no, String linha, Node element)
     {
         if(no != null)
@@ -260,100 +119,111 @@ public class Huffman
 
         }
     }
-
-    public void descomprimir (String nome)
+    
+    public static void getElemento (Node no, String linha, String [] resp)
     {
+        if(no != null)
+        {
+            if(no.getLeft() == null && no.getRigth() == null)
+            {
+                resp[(int) no.getElemento()] = linha;
+                return;
+            }
 
+            getElemento(no.getLeft(),  linha + "0", resp);
+            getElemento(no.getRigth(), linha + "1", resp);
+        }
 
-        
     }
 
-    public void comprimir (String nome)
+    public Node fazerArvore (int [] quant)
     {
-        System.out.println(0);
-        
-        Huffman hf = new Huffman ();
+        Vector <Node> lizt = new Vector <Node> ();
 
-        try
+        for(int i = 0; i < quant.length; i++)
         {
+            if(quant[i] != 0)
+            {
+                lizt.add(new Node(quant[i], (char) i));
+            }
+        }
 
-            RandomAccessFile ra = new RandomAccessFile("./" + nome, "r");
+        Node raiz = new Node(0, '-');
 
-            String linha = ""; 
+        while(lizt.size() > 1)
+        {
+            Node tmp1 = lizt.remove(getMenor(lizt));
+            Node tmp2 = lizt.remove(getMenor(lizt));
 
-            // for(int p = 0; p < 1000; p++)
+            Node notmp = new Node (0, '-');
+
+            notmp.setLeft (tmp1);
+            notmp.setRigth(tmp2);
+            notmp.setQuant(tmp1.getQuant() + tmp2.getQuant());
+
+            raiz = notmp;
+
+            lizt.add(notmp);
+        }
+
+        for(int i = 0; i < lizt.size(); i++)
+        {
+            preencheCaminho(raiz, "", lizt.get(i));
+        }
+
+        return(raiz);
+    }
+
+    public String [] fazerTabela (int [] quant)
+    {
+
+        String [] tabela = new String [256];
+
+        Node raiz = fazerArvore(quant);
+        getElemento(raiz, "", tabela);
+
+        return(tabela);
+
+    }
+
+    public int [] comprimir ()
+    {
+
+        try 
+        {
+            Scanner sc = new Scanner(System.in);
+
+            System.out.print("\nNome do arquivo: ");
+            String path = sc.nextLine();
+
+            RandomAccessFile ra = new RandomAccessFile("./" + path, "r");
+            String content  = "";
+            String compress = "";
+
             while(ra.getFilePointer() != ra.length())
             {
-                linha = linha + ra.readLine();
+                content = content + ra.readLine();
             }
 
-            System.out.println(1);
+            int    [] quant  = quantChar(content);
+            String [] tabela = fazerTabela(quant);
 
-            Vector <Integer>   vetorQuant = new Vector<Integer>();
-            Vector <Character> vetorChar  = diffChars (linha, vetorQuant);
-
-            Vector <Node> lizt = new Vector <Node> ();
-
-            for(int i = 0; i < vetorChar.size(); i++)
+            for(int i = 0; i < content.length(); i++)
             {
-                lizt.add(new Node (vetorQuant.get(i), vetorChar.get(i)));
+                compress = compress + tabela[ (int) content.charAt(i) ];
             }
-
-            System.out.println(2);
-            
-            Node raiz = new Node(0, '-');
-
-            while(lizt.size() > 1)
-            {
-                Node tmp1 = lizt.remove(getMenor(lizt));
-                Node tmp2 = lizt.remove(getMenor(lizt));
-
-                Node notmp = new Node (0, '-');
-
-                notmp.setLeft (tmp1);
-                notmp.setRigth(tmp2);
-                notmp.setQuant(tmp1.getQuant() + tmp2.getQuant());
-
-                raiz = notmp;
-
-                lizt.add(notmp);
-            }
-
-            System.out.println(3);
-
-            for(int i = 0; i < lizt.size(); i++)
-            {
-                preencheCaminho(raiz, "", lizt.get(i));
-            }
-
-            for(int i = 0; i < lizt.size(); i++)
-            {
-                System.out.println(lizt.get(i).getElemento() + " --- " + lizt.get(i).caminho);
-            }
-
-            String comp = "";
-
-            for(int i = 0; i < linha.length(); i++)
-            {
-                String [] resp = {""};
-                printCompress(raiz, "", linha.charAt(i), resp);
-                comp = comp + resp[0];
-            }
-
-            System.out.println(4);
 
             String write = "";
 
-            for(int i = 0; i < comp.length(); i = i + 8)
+            for(int i = 0; i < compress.length(); i = i + 8)
             {
-                if(i + 8 < comp.length())
+                if(i + 8 < compress.length())
                 {
-                    write = write + (char)Integer.parseInt(comp.substring(i, i+8), 2);
+                    write = write + (char)Integer.parseInt(compress.substring(i, i+8), 2);
                 }
                 else
                 {
-                    
-                    String fix = comp.substring(i, comp.length());
+                    String fix = compress.substring(i, compress.length());
 
                     while(fix.length() != 8)
                     {
@@ -365,20 +235,100 @@ public class Huffman
                 
             }
 
-            System.out.println(5);
+            RandomAccessFile wa = new RandomAccessFile("./ARQUIVOS/CompHuffman.hex", "rw");
 
-            RandomAccessFile writeComp = new RandomAccessFile("./" + nome + "Huffman.hex", "rw");
-            writeComp.writeBytes(write);
+            wa.writeBytes(write);
+            
+            return(quant);
 
-            System.out.println(6);
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+
+        return(new int [0]);
+
+    }
+
+    public void descomprimir (int [] quant)
+    {
+
+        try 
+        {
+
+            Scanner sc = new Scanner(System.in);
+
+            //System.out.print("\nNome do arquivo: ");
+            String path = "CompHuffman.hex"; //sc.nextLine();
+
+            RandomAccessFile ra = new RandomAccessFile("./ARQUIVOS/" + path, "r");
+            String texto = "";
+
+            while(ra.getFilePointer() != ra.length())
+            {
+                String tmp = ra.readLine();
+
+                for(int i = 0; i < tmp.length(); i++)
+                {
+                    String fix = Integer.toBinaryString((int)tmp.charAt(i));
+
+                    while(fix.length() < 8)
+                    {
+                        fix = '0' + fix;
+                    }
+
+                    texto = texto + fix;
+                }
+                
+            }
+
+            Node raiz = fazerArvore(quant);
+            Node tmp  = raiz;
+            String resp = "";
+
+            for(int i = 0; i < texto.length(); i++)
+            {
+                if(texto.charAt(i) == '0')
+                {
+                    tmp = tmp.getLeft();
+                }
+                else
+                {
+                    tmp = tmp.getRigth();
+                }
+
+                if(tmp.getLeft() == null && tmp.getRigth() == null)
+                {
+                    resp = resp + tmp.getElemento();
+                    tmp = raiz;
+                }
+            }
+
+            RandomAccessFile wa = new RandomAccessFile("./ARQUIVOS/DescompHuffman.txt", "rw");
+
+            wa.writeBytes(resp);
+
 
         }
         catch(Exception e)
         {
-            System.out.println("ERRO: Erro na compressão");
+            e.printStackTrace();
         }
 
-
     }
-    
+
+    public static void run ()
+    {
+        Scanner sc = new Scanner(System.in);
+        Huffman hf = new Huffman();
+        int [] quant = hf.comprimir();
+        System.out.println("\nDeseja descomprimir o arquivo?\n- SIM\n- NÃO\n\n");
+
+        if(sc.nextLine().equals("SIM"))
+        {
+            hf.descomprimir(quant);
+        }
+    }
+
 }
