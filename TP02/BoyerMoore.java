@@ -1,3 +1,4 @@
+import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 class Hash
@@ -34,18 +35,29 @@ class Hash
 public class BoyerMoore 
 {
 
-	public void pesquisa ()
+	public void pesquisa () 
 	{
-		
-		Scanner sc = new Scanner(System.in);
+		try 
+        {
+            Scanner sc = new Scanner(System.in);
 
-		System.out.print("\nNome do Arquivo: ");
-		String frase   = sc.nextLine();
+            System.out.print("\nNome do Arquivo: ");
+            String path   = sc.nextLine();
+            RandomAccessFile ra = new RandomAccessFile ("./" + path, "r");
 
-		System.out.println("\nFrase para pesquisar: ");
-		String palavra = sc.nextLine();
+            String frase = ra.readLine();
 
-		pesquisa(frase, palavra);
+            System.out.println("\nFrase para pesquisar: ");
+            String palavra = sc.nextLine();
+
+            pesquisa(frase, palavra);
+        } 
+        catch (Exception e) 
+        
+        {
+            System.out.println("ERRO: ARQUIVO NÃO ENCONTRADO");
+        }
+
 
 	}
 
@@ -61,9 +73,7 @@ public class BoyerMoore
             
         while(i < frase.length())
         {
-            System.out.println(i);
 
-            System.out.println(palavra.charAt(o) + " --- " + frase.charAt(i));
             if(palavra.charAt(o) == frase.charAt(i))
             {
                 o--;
