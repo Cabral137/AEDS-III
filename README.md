@@ -2,12 +2,12 @@
 
 Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dados III
 
-## - [Trabalho Prático I](/TP01)
-CRUD em arquivo CSV
-## - [Trabalho Prático II](/TP02)
-Compactação e Casamento de Padrão
-## - [Trabalho Prático III]()
-Criptografia
+## - [Trabalho Prático I (CRUD em arquivo CSV)](/TP01)
+
+## - [Trabalho Prático II (Compactação e Casamento de Padrão)](/TP02)
+
+## - [Trabalho Prático III (Criptografia)]()
+
 ## - [Compressão](/Compressão)
    - [Huffman](/Compressão/Huffman)
    - [LZW](/Compressão/LZW)
