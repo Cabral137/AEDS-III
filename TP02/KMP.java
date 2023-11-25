@@ -4,139 +4,144 @@ import java.util.Scanner;
 public class KMP
 {
 
-	public static int [] criarVetor (String palavra)
-	{
+    // Método para criar o vetor de posições (prefixo-sufixo) para a palavra no algoritmo KMP
+    public static int[] criarVetor(String palavra)
+    {
+        int[] pos = new int[palavra.length()];
 
-	    int [] pos = new int [palavra.length()];
-		    
-	    for(int i = 1; i < palavra.length(); i++)
-		{
-		           
-		    for(int j = 0; j < i; j++)
-	        {
-		               
-	            if(palavra.charAt(i) == palavra.charAt(j))
-		        {
-		                  
-		            int contador = 0;
-					int tmp = j;
-    		               
-    		        while(tmp > -1)
-		            {
-		               
-    	                if(palavra.charAt(i - contador) == palavra.charAt(tmp))
-        	            {
-    		                contador++;
-        		        }
-        		        else
-        		        {
-        		            contador = 0;
-    		                break;
-    		            }
-        	               
-        	            tmp--;
-    		        }
-    		               
-					if(contador > pos[i])
-					{
-						pos[i] = contador;
-					}
-		               
-	            }
-		           
-		    }
-		           
-		}
+        for (int i = 1; i < palavra.length(); i++)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                if (palavra.charAt(i) == palavra.charAt(j))
+                {
+                    int contador = 0;
+                    int tmp = j;
 
-		return(pos);
-	}
+                    while (tmp > -1)
+                    {
+                        if (palavra.charAt(i - contador) == palavra.charAt(tmp))
+                        {
+                            contador++;
+                        }
+                        else
+                        {
+                            contador = 0;
+                            break;
+                        }
 
-	public static void pesquisa () 
-	{
-		try 
+                        tmp--;
+                    }
+
+                    if (contador > pos[i])
+                    {
+                        pos[i] = contador;
+                    }
+                }
+            }
+        }
+
+        return pos;
+    }
+
+    // Método principal para iniciar a pesquisa KMP
+    public void pesquisa() 
+    {
+        try 
         {
             Scanner sc = new Scanner(System.in);
 
+            // Solicitar o nome do arquivo
             System.out.print("\nNome do Arquivo: ");
-            String path   = sc.nextLine();
-            RandomAccessFile ra = new RandomAccessFile ("./" + path, "r");
+            String path = sc.nextLine();
+            RandomAccessFile ra = new RandomAccessFile("./ARQUIVOS/TESTE/" + path, "r");
 
-            String frase = ra.readLine();
+            String frase = "";
+            while (ra.getFilePointer() != ra.length())
+            {
+                frase = frase + ra.readLine();
+            }
 
-            System.out.print("\nFrase para pesquisar: ");
+            // Solicitar a palavra a ser pesquisada
+            System.out.print("\nPalavra para pesquisar: ");
             String palavra = sc.nextLine();
 
+            // Iniciar a pesquisa
             pesquisa(frase, palavra);
         } 
         catch (Exception e) 
-        
         {
             System.out.println("ERRO: ARQUIVO NÃO ENCONTRADO");
         }
+    }
 
+    // Método para realizar a pesquisa KMP
+    public static void pesquisa(String frase, String palavra)
+    {
+        try 
+        {
+            Scanner sc = new Scanner(System.in);
 
-	}
+            int encontrou = 0;
+            int comparacoes = 0;
+            int[] pos = criarVetor(palavra);
+            int o = 0;
 
-	public static void pesquisa (String frase, String palavra)
-	{
+            for (int i = 0; i < frase.length(); i++)
+            {
+                comparacoes++;
+                if (palavra.charAt(o) == frase.charAt(i))
+                {
+                    o++;
 
-		try 
-		{
-			Scanner sc = new Scanner(System.in);
-			boolean encontrou = false;   
+                    if (o == palavra.length())
+                    {
+                        System.out.println("\n\nACHOU");
+                        System.out.println("Posição: " + (i - palavra.length()));
+                        System.out.println("Comparações: " + comparacoes);
+                        System.out.println("\n\nCONTINUAR? \n- SIM\n- NÃO");
+                        encontrou++;
 
-			int [] pos = criarVetor(palavra);
-			int o = 0;
+                        if (sc.nextLine().equals("SIM"))
+                        {
+                            o = 0;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    i = i + (o - pos[o]);
+                    o = pos[o];
+                }
+            }
 
-			for(int i = 0; i < frase.length(); i++)
-			{
+            // Exibir resultados da pesquisa
+            if (encontrou < 1)
+            {
+                System.out.println("\nNÃO EXISTE ESSE PADRÃO NO ARQUIVO");
+            }
+            else
+            {
+                if (encontrou == 1)
+                {
+                    System.out.println("\nO PADRÃO FOI ENCONTRADO " + encontrou + " VEZ NO ARQUIVO");
+                }
+                else
+                {
+                    System.out.println("\nO PADRÃO FOI ENCONTRADO " + encontrou + " VEZES NO ARQUIVO");
+                }
+            }
 
-				if(palavra.charAt(o) == frase.charAt(i))
-				{
-					o++;
-
-					if(o == palavra.length())
-					{
-						System.out.println("\nACHOU");
-						System.out.println("Posição: " + i);
-						System.out.println("\n\nCONTINUAR? \n- SIM\n- NÃO");
-						encontrou = true;
-
-						if(!sc.nextLine().equals("SIM"))
-						{
-							break;
-						}
-
-						o = 0;
-						
-					}
-
-				}
-				else
-				{
-					i = i + (o - pos[o]);					
-					o = pos[o];
-				}
-
-			}
-
-			if(!encontrou)
-			{
-				System.out.println("\nNÃO EXISTE ESSE PADRÃO NO ARQUIVO");
-			}
-		} 
-		catch (Exception e) 
-		{
-			System.out.println("ERRO: ERRO NA PESQUISA");
-			e.printStackTrace();
-		}
-
-
-	}
-
-	public static void main(String[] args) 
-	{
-		pesquisa();
-	}
-
+            sc.nextLine();
+        } 
+        catch (Exception e) 
+        {
+            System.out.println("\nERRO: ERRO NA PESQUISA");
+            e.printStackTrace();
+        }
+    }
 }
