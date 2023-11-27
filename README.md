@@ -10,11 +10,11 @@ Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dad
 
 ## - [Compressão](/Compressão)
    - [Huffman](/Compressão/Huffman)
-   - [LZW](/Compressão/LZW)
+   - [LZW](/Compressão/LZW/LZW.java)
 
 ## - [Casamento de Padrões](/Casamento%20de%20Padrões)
-   - [KMP](/Casamento%20de%20Padrões/KMP)
-   - [Boyer-Moore](/Casamento%20de%20Padrões/BoyerMoore)
+   - [KMP](/Casamento%20de%20Padrões/KMP/KMP.java)
+   - [Boyer-Moore](/Casamento%20de%20Padrões/BoyerMoore/BoyerMoore.java)
 
 ## - [Criptografia](/Criptografia)
    - [Cifra de Caesar](/Criptografia/Caesar.java)
