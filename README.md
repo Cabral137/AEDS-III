@@ -6,7 +6,7 @@ Repositório com atividades propostas na matéria Algoritmos e Estruturas de Dad
 
 ## - [Trabalho Prático II (Compactação e Casamento de Padrão)](/TP02)
 
-## - [Trabalho Prático III (Criptografia)]()
+## - [Trabalho Prático III (Criptografia)](/TP03)
 
 ## - [Compressão](/Compressão)
    - [Huffman](/Compressão/Huffman)
