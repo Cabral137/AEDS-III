@@ -17,6 +17,7 @@ public class Vigenere
                 i = 0;
             }
 
+
             if(frase.charAt(cont) >= 'A' && frase.charAt(cont) <= 'Z')
             {
                 resp = resp + Character.toUpperCase(chave.charAt(i));
@@ -26,6 +27,10 @@ public class Vigenere
                 if(frase.charAt(cont) >= 'a' && frase.charAt(cont) <= 'z')
                 {
                     resp = resp + Character.toLowerCase(chave.charAt(i));
+                }
+                else
+                {
+                    resp = resp + chave.charAt(i);
                 }
             }
 
