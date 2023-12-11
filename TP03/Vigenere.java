@@ -1,3 +1,4 @@
+import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 public class Vigenere
@@ -24,14 +25,7 @@ public class Vigenere
             }
             else
             {
-                if(frase.charAt(cont) >= 'a' && frase.charAt(cont) <= 'z')
-                {
-                    resp = resp + Character.toLowerCase(chave.charAt(i));
-                }
-                else
-                {
-                    resp = resp + chave.charAt(i);
-                }
+                resp = resp + Character.toLowerCase(chave.charAt(i));
             }
 
             cont++;
@@ -44,33 +38,50 @@ public class Vigenere
 
     public static String cipher (String frase, String chave)
     {
-
         String tmp = "";
 
         for(int i = 0; i < frase.length(); i++)
         {
             int aux = 0;
-        
-            if(frase.charAt(i) > chave.charAt(i))
-            {
-                aux = ((frase.charAt(i)) - (chave.charAt(i)));
-                System.out.println(frase.charAt(i) + "(" + (int) frase.charAt(i) + ")" +" | " + chave.charAt(i) + "(" + (int) chave.charAt(i) + ")" + " = " + aux);
-            }
-            else
-            {
-                aux = ((chave.charAt(i)) - (frase.charAt(i)));
-                System.out.println(frase.charAt(i) + "(" + (int) frase.charAt(i) + ")" +" | " + chave.charAt(i) + "(" + (int) chave.charAt(i) + ")" + " = " + aux);
-            }
 
-            if(Character.isUpperCase(frase.charAt(i)))
+            if(Character.isLetter(frase.charAt(i)))
             {
-                aux = aux + 'A';
-                System.out.println("\t" + aux);
+                if(Character.isUpperCase(frase.charAt(i)))
+                {
+                    aux = (frase.charAt(i) + (chave.charAt(i) - 'A'));
+
+                    if(aux > 'Z')
+                    {
+                        aux = 'A' + (aux - 'Z');
+                    }
+
+                }
+                else
+                {
+                    aux = (frase.charAt(i) + (chave.charAt(i) - 'a'));
+
+                    if(aux > 'z')
+                    {
+                        aux = 'a' + (aux - 'z');
+                    }
+                }
             }
             else
             {
-                aux = aux + 'a';
-                System.out.println("\t" + aux);
+                if(Character.isDigit(frase.charAt(i)))
+                {
+                    aux = (frase.charAt(i) + ((chave.charAt(i) - 'a') % 9));
+
+                    if(aux > '9')
+                    {
+                        aux = '/' + (aux - '9');
+                    }
+
+                }
+                else
+                {
+                    aux = frase.charAt(i);
+                }
             }
 
             tmp = tmp + ((char) aux );
@@ -78,110 +89,181 @@ public class Vigenere
         }
 
         return(tmp);
-
     }
 
     public static String decipher (String frase, String chave)
     {
-
         String tmp = "";
 
         for(int i = 0; i < frase.length(); i++)
         {
             int aux = 0;
 
-            if(frase.charAt(i) > chave.charAt(i))
+            if(Character.isLetter(frase.charAt(i)))
             {
-                aux = ((frase.charAt(i)) - (chave.charAt(i)));
-                System.out.println(frase.charAt(i) + "(" + (int) frase.charAt(i) + ")" +" | " + chave.charAt(i) + "(" + (int) chave.charAt(i) + ")" + " = " + aux);
+                if(Character.isUpperCase(frase.charAt(i)))
+                {
+                    aux = (frase.charAt(i) - (chave.charAt(i) - 'A'));
+
+                    if(aux < 'A')
+                    {
+                        aux = 'Z' + (aux - 'A');
+                    }
+
+                }
+                else
+                {
+                    aux = (frase.charAt(i) - (chave.charAt(i) - 'a'));
+
+                    if(aux < 'a')
+                    {
+                        aux = 'z' + (aux - 'a');
+                    }
+
+                }
             }
             else
             {
-                aux = ((chave.charAt(i)) - (frase.charAt(i)));
-                System.out.println(frase.charAt(i) + "(" + (int) frase.charAt(i) + ")" +" | " + chave.charAt(i) + "(" + (int) chave.charAt(i) + ")" + " = " + aux);
-            }
-        
-            if(Character.isUpperCase(frase.charAt(i)))
-            {
-                aux = (aux) - 'A';
-            }
-            else
-            {
-                aux = aux - 'a';
+                if(Character.isDigit(frase.charAt(i)))
+                {
+                    aux = (frase.charAt(i) - ((chave.charAt(i) - 'a') % 9));
+
+                    if(aux < '0')
+                    {
+                        aux = ':' - ('0' - aux);
+                    }
+
+                }
+                else
+                {
+                    aux = frase.charAt(i);
+                }
             }
 
+            tmp = tmp + ((char) aux);
 
+        }
 
-            tmp = tmp + ((char) aux );
+        return(tmp);
+    }
+
+    public static void frase ()
+    {
+        try
+        {
+            Scanner sc = new Scanner (System.in);
+
+            System.out.println();
+
+            System.out.print("Frase: ");
+            String frase = sc.nextLine();
+
+            System.out.print("Chave: ");
+            String chave = geraChave(frase, sc.nextLine());
+
+            System.out.println("\n");
+
+            System.out.println("Frase Original: " + frase);
+            System.out.println("Chave Adaptada: " + chave);
+
+            System.out.println("\n");
+
+            String tmp = cipher(frase, chave);
             
+            System.out.println("Frase Criptografada: " + tmp);
+            System.out.println("Frase Descriptogrfada: " + decipher(tmp, chave));
         }
-
-        return(tmp);
-
-    }
-
-    public static String cipher2 (String frase, String chave)
-    {
-        String tmp = "";
-
-        for(int i = 0; i < frase.length(); i++)
+        catch(Exception e)
         {
-            int aux = 0;
-
-            if(Character.isUpperCase(frase.charAt(i)))
-            {
-                aux = ((frase.charAt(i) + chave.charAt(i)) % 26) + 'A';
-            }
-            else
-            {
-                aux = ((frase.charAt(i) + chave.charAt(i)) % 26) + 'a';
-            }
-
-            tmp = tmp + ((char) aux );
-
+            System.out.println("ERRO: Erro ao criptografar/descriptografar a frase");
         }
-
-        return(tmp);
     }
 
-    public static String decipher2 (String frase, String chave)
+    public static void arquivo ()
     {
-        String tmp = "";
-
-        for(int i = 0; i < frase.length(); i++)
+        try
         {
-            int aux = 0;
+            Scanner sc = new Scanner (System.in);
 
-            if(Character.isUpperCase(frase.charAt(i)))
+            System.out.println();
+
+            System.out.print("Nome do Arquivo: ");
+            String nome = sc.nextLine();
+
+            RandomAccessFile ra = new RandomAccessFile("./ARQUIVOS/" + nome + ".txt", "r");
+
+            String frase = "";
+
+            while(ra.getFilePointer() < ra.length())
             {
-                aux = (((frase.charAt(i) - chave.charAt(i)) + 26) % 26) + 'A';
-            }
-            else
-            {
-                aux = (((frase.charAt(i) - chave.charAt(i)) + 26) % 26) + 'a';
+                frase = frase + ra.readLine() + "\n";
             }
 
-            tmp = tmp + ((char) aux );
+            System.out.print("Chave: ");
+            String chave = geraChave(frase, sc.nextLine());
+
+            System.out.println("\n");
+
+            String cifra   = cipher(frase, chave);
+
+            ra = new RandomAccessFile("./ARQUIVOS/" + nome + "Cifrado.txt", "rw");
+            ra.writeBytes(cifra);
+
+            System.out.println("Deseja decifrar o arquivo?\n" +
+                                 "1 - SIM\n" +
+                                 "2 - NÃO\n");
+
+            if(Integer.parseInt(sc.nextLine()) == 1)
+            {
+                String decifra = decipher(cifra, chave);
+                ra = new RandomAccessFile("./ARQUIVOS/" + nome + "Decifrado.txt", "rw");
+                ra.writeBytes(decifra);
+            }
+
+            System.out.println("\nFIM");
 
         }
-
-        return(tmp);
+        catch(Exception e)
+        {
+            System.out.println("ERRO: Erro ao criptografar/descriptografar o arquivo");
+            e.printStackTrace();
+        }
     }
 
-    public static void main(String[] args) 
+    public void run() 
     {
     
-        Scanner sc = new Scanner(System.in);
+        try
+        {
 
-        String chave = sc.nextLine();
-        String frase = sc.nextLine();
+            System.out.println("\n\tTrabalho Prático III - AEDS III (Vigenère) - Victor Cabral\n");
 
-        String adgasdg = cipher2(frase, geraChave(frase, chave));
+            Scanner sc = new Scanner (System.in);
 
-        System.out.println("\n\n\n" + adgasdg + "       " + geraChave(frase, chave) +  "\n\n\n");
+            System.out.println("O que deseja criptografar? \n" +
+                               "1 - Frase\n" +
+                               "2 - Arquivo\n" +
+                               "0 - Sair\n");
 
-        System.out.println(decipher2(adgasdg, geraChave(frase, chave)));
+            int acao = Integer.parseInt(sc.nextLine());
 
+            switch (acao) 
+            {
+                case 1:
+                frase();
+                break;
+            
+                case 2:
+                arquivo();
+                break;
+            
+            }
+
+        }
+        catch(Exception e)
+        {
+            System.out.println("ERRO: Opção inválida");
+        }
 
     }
     
